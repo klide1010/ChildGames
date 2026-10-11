@@ -6,7 +6,7 @@ App.register({
   desc: 'Gira le carte e trova le coppie di personaggi. Meno mosse fai, più punti prendi!',
   color: '#7b61ff',
   duration: null,
-  art: () => Chars.img('ruby') + Chars.img('jino'),
+  art: () => Chars.img('rumi') + Chars.img('jinu'),
 
   start(ctx) {
     let pairs = 6, first = null, lock = false, moves = 0, found = 0;
@@ -89,7 +89,7 @@ App.register({
 
     ctx.intro({
       title: 'Memory delle Stelle',
-      art: Chars.img('mila') + Chars.img('saetta'),
+      art: Chars.img('mira') + Chars.img('sonic'),
       text: 'Tocca due carte: se sono uguali restano scoperte! Ogni coppia vale <b>+50</b>, e alla fine ricevi un bonus se sei stato veloce e hai fatto poche mosse.',
       buttons: [
         { label: '😊 Facile · 6 coppie', value: 6 },

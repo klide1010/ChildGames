@@ -24,8 +24,50 @@ App.register({
     let running = false, raf = 0, last = 0, t = 0, spawnIn = 0.4, shake = 0, flash = 0;
     let swiping = false, swipeHits = 0, cut = 0, bombs = 0, lastPt = null;
 
-    const radius = () => Math.max(26, Math.min(cv.W, cv.H) * 0.075);
-    const gravity = () => cv.H * 1.4;
+    const radius = () => Math.max(30, Math.min(cv.W, cv.H) * 0.085);
+    const gravity = () => cv.H * 1.1;
+
+    // Ogni emoji viene disegnata una volta sola su un'immagine e poi solo copiata:
+    // molto più veloce e affidabile sui telefoni che riscriverla a ogni fotogramma.
+    const sprites = {};
+    function sprite(e, r) {
+      const key = e + '|' + Math.round(r);
+      if (!sprites[key]) {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const size = Math.ceil(r * 2.6);
+        const c = document.createElement('canvas');
+        c.width = c.height = Math.ceil(size * dpr);
+        const sg = c.getContext('2d');
+        sg.scale(dpr, dpr);
+        sg.font = `${Math.round(r * 2)}px ${EMOJI_FONT}`;
+        sg.textAlign = 'center';
+        sg.textBaseline = 'middle';
+        sg.fillText(e, size / 2, size / 2 + r * 0.1);
+        sprites[key] = { c, size };
+      }
+      return sprites[key];
+    }
+
+    // Sfondo di legno disegnato una volta e poi copiato (il canvas è opaco)
+    let bg = null;
+    function background() {
+      const W = cv.W, H = cv.H;
+      if (!bg || bg.W !== W || bg.H !== H) {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const c = document.createElement('canvas');
+        c.width = Math.ceil(W * dpr); c.height = Math.ceil(H * dpr);
+        const bgc = c.getContext('2d');
+        bgc.scale(dpr, dpr);
+        const grad = bgc.createLinearGradient(0, 0, 0, H);
+        grad.addColorStop(0, '#8d5a32'); grad.addColorStop(1, '#5c3418');
+        bgc.fillStyle = grad;
+        bgc.fillRect(0, 0, W, H);
+        bgc.fillStyle = 'rgba(0,0,0,.08)';
+        for (let x = 70; x < W; x += 72) bgc.fillRect(x, 0, 2, H);
+        bg = { c, W, H };
+      }
+      g.drawImage(bg.c, 0, 0, W, H);
+    }
 
     function spawn() {
       const W = cv.W, H = cv.H, grav = gravity();
@@ -136,15 +178,13 @@ App.register({
     }
 
     function emoji(e, r) {
-      g.font = `${Math.round(r * 2)}px ${EMOJI_FONT}`;
-      g.textAlign = 'center';
-      g.textBaseline = 'middle';
-      g.fillText(e, 0, r * 0.1);
+      const s = sprite(e, r);
+      g.drawImage(s.c, -s.size / 2, -s.size / 2, s.size, s.size);
     }
 
     function draw() {
       const W = cv.W, H = cv.H;
-      g.clearRect(0, 0, W, H);
+      background();
       g.save();
       if (shake > 0) g.translate(rand(-8, 8), rand(-8, 8));
       for (const d of drops) {
@@ -166,8 +206,11 @@ App.register({
       for (const o of items) {
         g.save();
         g.translate(o.x, o.y); g.rotate(o.a);
-        if (o.kind === 'bomb') { g.shadowColor = '#ff2d2d'; g.shadowBlur = 18; }
-        if (o.kind === 'star') { g.shadowColor = '#fff59d'; g.shadowBlur = 24; }
+        if (o.kind !== 'fruit') {
+          // alone colorato: rosso per le bombe, giallo per la stella
+          g.fillStyle = o.kind === 'bomb' ? 'rgba(255,45,45,.35)' : 'rgba(255,245,157,.45)';
+          g.beginPath(); g.arc(0, 0, o.r * 1.15, 0, Math.PI * 2); g.fill();
+        }
         emoji(o.e, o.r);
         g.restore();
       }
@@ -175,14 +218,14 @@ App.register({
       trail = trail.filter(p => now - p.t < 140);
       if (trail.length > 1) {
         g.lineCap = 'round'; g.lineJoin = 'round';
-        g.shadowColor = '#9ff'; g.shadowBlur = 14;
-        g.strokeStyle = 'rgba(255,255,255,.95)';
-        g.lineWidth = 6;
-        g.beginPath();
-        g.moveTo(trail[0].x, trail[0].y);
-        for (const p of trail) g.lineTo(p.x, p.y);
-        g.stroke();
-        g.shadowBlur = 0;
+        for (const [w, col] of [[12, 'rgba(150,255,255,.35)'], [5, 'rgba(255,255,255,.95)']]) {
+          g.strokeStyle = col;
+          g.lineWidth = w;
+          g.beginPath();
+          g.moveTo(trail[0].x, trail[0].y);
+          for (const p of trail) g.lineTo(p.x, p.y);
+          g.stroke();
+        }
       }
       g.restore();
       if (flash > 0) { g.fillStyle = `rgba(255,60,60,${flash})`; g.fillRect(0, 0, W, H); }
@@ -204,9 +247,9 @@ App.register({
       running = true;
       ctx.info('🍉 Frutti tagliati: 0');
       ctx.begin();
-      last = performance.now();
-      raf = requestAnimationFrame(loop);
     });
+    last = performance.now();
+    raf = requestAnimationFrame(loop);
 
     return {
       timeUp() {

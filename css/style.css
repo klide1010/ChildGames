@@ -200,7 +200,10 @@ img.ch { display: block; width: 100%; height: 100%; object-fit: contain; pointer
   touch-action: none;
   background: #fff;
 }
-.game-canvas { position: absolute; inset: 0; display: block; touch-action: none; }
+.game-canvas { position: absolute; inset: 0; display: block; touch-action: none; border-radius: var(--radius); }
+/* Nei giochi su canvas niente ritaglio sul contenitore: su alcuni telefoni
+   un canvas dentro un riquadro arrotondato con overflow:hidden non si ridisegna */
+.stage-frutta, .stage-corsa { overflow: visible; background: transparent; }
 
 /* Scritte volanti */
 .float {
@@ -300,11 +303,6 @@ img.ch { display: block; width: 100%; height: 100%; object-fit: contain; pointer
 .end-btns { display: flex; gap: 12px; justify-content: center; }
 
 /* ---------------- GIOCO: frutta ---------------- */
-.stage-frutta {
-  background:
-    repeating-linear-gradient(90deg, rgba(0, 0, 0, .06) 0 2px, transparent 2px 70px),
-    linear-gradient(180deg, #8d5a32, #5c3418);
-}
 
 /* ---------------- GIOCO: memory ---------------- */
 .stage-memory { background: linear-gradient(160deg, #efe9ff, #d8ccff); display: flex; align-items: center; justify-content: center; }
@@ -333,7 +331,6 @@ img.ch { display: block; width: 100%; height: 100%; object-fit: contain; pointer
 @keyframes matched { 50% { transform: rotateY(180deg) scale(1.12); } }
 
 /* ---------------- GIOCO: corsa ---------------- */
-.stage-corsa { background: linear-gradient(180deg, #4fb3ff 0%, #a6dcff 60%, #d8f1ff 100%); }
 .ring-ico {
   display: inline-block; width: 34px; height: 34px; border-radius: 50%;
   border: 7px solid var(--gold); box-shadow: 0 0 0 2px #c99a00, inset 0 0 0 2px #c99a00; margin-left: -10px;

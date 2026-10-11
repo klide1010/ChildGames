@@ -1,10 +1,10 @@
 'use strict';
 /*
  * Personaggi disegnati in SVG (nessuna immagine esterna).
- *  - Saetta: il riccio blu più veloce del mondo
- *  - Le Cacciastelle: Ruby, Mila e Zoe, cantanti che cacciano i demoni
- *  - I Ragazzi Ombra: Jino, Abe, Misty, Romeo e Bebo, la band dei demoni
- *  - Tigro: la tigre blu amica delle Cacciastelle
+ *  - Sonic: il riccio blu più veloce del mondo
+ *  - Le Huntrix: Rumi, Mira e Zoey, cantanti che cacciano i demoni
+ *  - I Saja Boys: Jinu, Abby, Mystery, Romance e Baby, la band dei demoni
+ *  - Derpy: la tigre blu amica delle Huntrix
  */
 const Chars = (() => {
   const SKIN = '#ffdcc2';
@@ -146,16 +146,16 @@ const Chars = (() => {
   }
 
   const LIST = {
-    saetta: { name: 'Saetta', group: 'Il riccio blu', svg: hedgehog() },
-    ruby:   { name: 'Ruby', group: 'Cacciastelle', svg: singer({ hair: '#7b3fe4', outfit: '#5a189a', eye: '#d4a017', style: 'braid', acc: 'earring' }) },
-    mila:   { name: 'Mila', group: 'Cacciastelle', svg: singer({ hair: '#8b1e3f', outfit: '#d00000', eye: '#3a2a1a', style: 'long', acc: 'star' }) },
-    zoe:    { name: 'Zoe', group: 'Cacciastelle', svg: singer({ hair: '#16161d', outfit: '#0096c7', eye: '#3a2a1a', style: 'bob', acc: 'mic' }) },
-    jino:   { name: 'Jino', group: 'Ragazzi Ombra', svg: boy({ accent: '#ffc300', acc: 'hat' }) },
-    abe:    { name: 'Abe', group: 'Ragazzi Ombra', svg: boy({ accent: '#ff4d4d', acc: 'band' }) },
-    misty:  { name: 'Misty', group: 'Ragazzi Ombra', svg: boy({ accent: '#b388ff', acc: 'mask' }) },
-    romeo:  { name: 'Romeo', group: 'Ragazzi Ombra', svg: boy({ accent: '#ff6fb5', acc: 'rose' }) },
-    bebo:   { name: 'Bebo', group: 'Ragazzi Ombra', svg: boy({ accent: '#4dd0ff', acc: 'cap' }) },
-    tigro:  { name: 'Tigro', group: 'La tigre blu', svg: tiger() },
+    sonic: { name: 'Sonic', group: 'Il riccio blu', svg: hedgehog() },
+    rumi:   { name: 'Rumi', group: 'Huntrix', svg: singer({ hair: '#7b3fe4', outfit: '#5a189a', eye: '#d4a017', style: 'braid', acc: 'earring' }) },
+    mira:   { name: 'Mira', group: 'Huntrix', svg: singer({ hair: '#8b1e3f', outfit: '#d00000', eye: '#3a2a1a', style: 'long', acc: 'star' }) },
+    zoey:    { name: 'Zoey', group: 'Huntrix', svg: singer({ hair: '#16161d', outfit: '#0096c7', eye: '#3a2a1a', style: 'bob', acc: 'mic' }) },
+    jinu:   { name: 'Jinu', group: 'Saja Boys', svg: boy({ accent: '#ffc300', acc: 'hat' }) },
+    abby:    { name: 'Abby', group: 'Saja Boys', svg: boy({ accent: '#ff4d4d', acc: 'band' }) },
+    mystery:  { name: 'Mystery', group: 'Saja Boys', svg: boy({ accent: '#b388ff', acc: 'mask' }) },
+    romance:  { name: 'Romance', group: 'Saja Boys', svg: boy({ accent: '#ff6fb5', acc: 'rose' }) },
+    baby:   { name: 'Baby', group: 'Saja Boys', svg: boy({ accent: '#4dd0ff', acc: 'cap' }) },
+    derpy:  { name: 'Derpy', group: 'La tigre blu', svg: tiger() },
   };
 
   const urls = {};
@@ -174,8 +174,8 @@ const Chars = (() => {
 
   return {
     ids: Object.keys(LIST),
-    boys: ['jino', 'abe', 'misty', 'romeo', 'bebo'],
-    girls: ['ruby', 'mila', 'zoe'],
+    boys: ['jinu', 'abby', 'mystery', 'romance', 'baby'],
+    girls: ['rumi', 'mira', 'zoey'],
     name: id => LIST[id].name,
     group: id => LIST[id].group,
     url, img, image,

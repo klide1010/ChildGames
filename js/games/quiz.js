@@ -1,12 +1,12 @@
 'use strict';
-/* Saetta Indovina: 10 indovinelli (contare, sommare, ombre misteriose, sequenze, intrusi). */
+/* Sonic Indovina: 10 indovinelli (contare, sommare, ombre misteriose, sequenze, intrusi). */
 App.register({
   id: 'indovina',
-  title: 'Saetta Indovina',
-  desc: '10 indovinelli con Saetta: conta gli anelli, scopri chi si nasconde nell’ombra, trova l’intruso!',
+  title: 'Sonic Indovina',
+  desc: '10 indovinelli con Sonic: conta gli anelli, scopri chi si nasconde nell’ombra, trova l’intruso!',
   color: '#00b894',
   duration: null,
-  art: () => Chars.img('saetta') + '<span class="emo">❓</span>',
+  art: () => Chars.img('sonic') + '<span class="emo">❓</span>',
   stars: p => (p >= 1150 ? 3 : p >= 750 ? 2 : p >= 300 ? 1 : 0),
 
   start(ctx) {
@@ -14,7 +14,7 @@ App.register({
     const { ri, pick, shuffle } = U;
 
     const box = U.el('div', 'quiz', `
-      <div class="quiz-head"><div class="quiz-avatar">${Chars.img('saetta')}</div><div class="bubble"></div></div>
+      <div class="quiz-head"><div class="quiz-avatar">${Chars.img('sonic')}</div><div class="bubble"></div></div>
       <div class="quiz-visual"></div>
       <div class="quiz-opts"></div>
       <div class="quiz-progress">${'<i></i>'.repeat(TOTAL)}</div>`);
@@ -45,7 +45,7 @@ App.register({
       add() {
         const a = ri(1, 7), b = ri(1, 7), n = a + b, o = numOpts(n, 1);
         return {
-          q: `Saetta ha ${a} anell${a > 1 ? 'i' : 'o'} e ne trova ${b > 1 ? `altri ${b}` : 'un altro'}. Quanti ne ha adesso?`,
+          q: `Sonic ha ${a} anell${a > 1 ? 'i' : 'o'} e ne trova ${b > 1 ? `altri ${b}` : 'un altro'}. Quanti ne ha adesso?`,
           visual: `<div class="sum">${ringsHTML(a)}<b>+</b>${ringsHTML(b)}</div>`,
           opts: o.map(String), ans: o.indexOf(n),
         };
@@ -53,7 +53,7 @@ App.register({
       sub() {
         const a = ri(4, 10), b = ri(1, a - 2), n = a - b, o = numOpts(n, 0);
         return {
-          q: `Saetta aveva ${a} anelli ma inciampa e ne perde ${b}. Quanti gliene restano?`,
+          q: `Sonic aveva ${a} anelli ma inciampa e ne perde ${b}. Quanti gliene restano?`,
           visual: ringsHTML(a, a - b), opts: o.map(String), ans: o.indexOf(n),
         };
       },
@@ -87,7 +87,7 @@ App.register({
         return { q: 'Qual è l’intruso? Trova quello diverso dagli altri!', visual: `<div class="pattern">${o.map(x => `<span>${x}</span>`).join('')}</div>`, opts: o, ans: o.indexOf(intruder), emoji: true };
       },
       more() {
-        const [p1, p2] = shuffle(Chars.ids.filter(i => i !== 'saetta')).slice(0, 2);
+        const [p1, p2] = shuffle(Chars.ids.filter(i => i !== 'sonic')).slice(0, 2);
         let a = ri(2, 9), b = ri(2, 9);
         if (a === b) b = a === 9 ? 7 : a + 1;
         const card = (id, n) => `<div>${Chars.img(id)}<b>${Chars.name(id)}</b><div class="stars">${'⭐'.repeat(n)}</div></div>`;
@@ -153,9 +153,9 @@ App.register({
     }
 
     ctx.intro({
-      title: 'Saetta Indovina',
-      art: Chars.img('saetta'),
-      text: 'Saetta ha 10 indovinelli per te! Ogni risposta giusta vale <b>100 punti</b>, e se rispondi in fretta prendi fino a <b>50 punti</b> in più!',
+      title: 'Sonic Indovina',
+      art: Chars.img('sonic'),
+      text: 'Sonic ha 10 indovinelli per te! Ogni risposta giusta vale <b>100 punti</b>, e se rispondi in fretta prendi fino a <b>50 punti</b> in più!',
     }, () => { ctx.begin(); ask(); });
 
     return { stop() { timers.forEach(clearTimeout); busy = true; } };
