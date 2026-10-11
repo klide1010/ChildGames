@@ -23,13 +23,14 @@ App.register({
     const P = { x: W * 0.22, y: ground, vy: 0, jumps: 0, inv: 0, spin: 0 };
     let running = false, raf = 0, last = 0, t = 0, speed = W * 0.5;
     let obs = [], rings = [], lost = [];
-    let held = 0, total = 0, lives = 3, stomps = 0, dist = 0, distAcc = 0, scroll = 0;
+    const MAX_LIVES = 5, LIFE_EVERY = 1000;
+    let total = 0, lives = 3, stomps = 0, dist = 0, distAcc = 0, scroll = 0, nextLife = LIFE_EVERY;
     let nextObs = W * 0.9, nextRing = W * 0.3;
 
     // gravità e salti misurati sulla taglia di Sonic: stesso salto su ogni telefono
     const grav = () => S * 22;
 
-    function info() { ctx.info(`💍 ${held} · ${U.hearts(lives)}`); }
+    function info() { ctx.info(`💍 ${total} · ${U.hearts(lives, Math.max(3, lives))}`); }
 
     function jump() {
       if (!running || P.jumps >= 2) return;
@@ -58,23 +59,32 @@ App.register({
       }
     }
 
+    // ogni ostacolo preso costa una vita (poi 2 secondi di invincibilità)
     function hit() {
-      if (held > 0) {
-        for (let i = 0; i < Math.min(held, 14); i++) {
-          lost.push({ x: P.x, y: P.y - S / 2, vx: rand(-260, 260), vy: rand(-520, -220), life: 1.3 });
-        }
-        held = 0;
-        P.inv = 1.5;
-        Sound.tone(900, 0.4, 'sawtooth', 0.06);
-        ctx.popup('Anelli persi!', P.x, P.y - S * 1.3, 'bad');
-      } else {
-        lives--;
-        P.inv = 2;
-        Sound.bad(); U.vibrate(200);
-        ctx.popup('Ahia!', P.x, P.y - S * 1.3, 'bad');
-        if (lives <= 0) { info(); gameOver(); return; }
+      lives--;
+      P.inv = 2;
+      for (let i = 0; i < 6; i++) {
+        lost.push({ x: P.x, y: P.y - S / 2, vx: rand(-260, 260), vy: rand(-520, -220), life: 1.1 });
       }
+      Sound.bad(); U.vibrate(200);
+      ctx.popup(lives > 0 ? '💔 -1 vita' : '💔', P.x, P.y - S * 1.3, 'bad');
       info();
+      if (lives <= 0) gameOver();
+    }
+
+    // una vita in più ogni 1000 punti
+    function checkExtraLife() {
+      while (ctx.points >= nextLife) {
+        nextLife += LIFE_EVERY;
+        if (lives < MAX_LIVES) {
+          lives++;
+          ctx.popup('❤️ +1 vita!', W / 2, H * 0.3, 'gold');
+          Sound.win();
+        } else {
+          ctx.popup('❤️ Vite al massimo!', W / 2, H * 0.3, 'gold');
+        }
+        info();
+      }
     }
 
     function gameOver() {
@@ -112,7 +122,7 @@ App.register({
       const cx = P.x, cy = P.y - S / 2;
       rings = rings.filter(r => {
         if (Math.hypot(r.x - cx, r.y - cy) < S * 0.6) {
-          held++; total++;
+          total++;
           ctx.add(10);
           Sound.ring();
           info();
@@ -126,6 +136,8 @@ App.register({
         if (l.y > ground) { l.y = ground; l.vy *= -0.6; }
       }
       lost = lost.filter(l => l.life > 0);
+
+      checkExtraLife();
 
       // ostacoli
       const pl = P.x - S * 0.32, pr = P.x + S * 0.32, pt = P.y - S * 0.85, pb = P.y;
@@ -279,7 +291,7 @@ App.register({
     ctx.intro({
       title: 'Sonic Corre',
       art: Chars.img('sonic'),
-      text: 'Tocca lo schermo per <b>saltare</b>. Tocca ancora mentre sei in aria per un <b>piccolo balzo</b> in più! Ogni anello vale <b>+10</b> e ti protegge. Salta sopra i granchi 🦀 per <b>+20</b>. Attento alle spine: hai 3 vite!',
+      text: 'Tocca lo schermo per <b>saltare</b>. Tocca ancora mentre sei in aria per un <b>piccolo balzo</b> in più! Ogni anello vale <b>+10</b>, salta sopra i granchi 🦀 per <b>+20</b>. Hai <b>3 vite</b>: ogni ostacolo che prendi te ne toglie una, ma ogni <b>1000 punti</b> ne guadagni una nuova! ❤️',
     }, () => {
       running = true;
       info();
