@@ -1,20 +1,20 @@
 'use strict';
-/* Canta con le Cacciastelle: ripeti la sequenza di note (stile Simon). */
+/* Canta con le Huntrix: ripeti la sequenza di note (stile Simon). */
 App.register({
   id: 'canta',
-  title: 'Canta con le Cacciastelle',
-  desc: 'Ruby, Mila, Zoe e Tigro cantano una melodia: ricordala e ripetila uguale!',
+  title: 'Canta con le Huntrix',
+  desc: 'Rumi, Mira, Zoey e Derpy cantano una melodia: ricordala e ripetila uguale!',
   color: '#f15bb5',
   duration: null,
-  art: () => Chars.img('ruby') + Chars.img('zoe'),
+  art: () => Chars.img('rumi') + Chars.img('zoey'),
   stars: p => (p >= 300 ? 3 : p >= 120 ? 2 : p >= 30 ? 1 : 0),
 
   start(ctx) {
     const PADS = [
-      { id: 'ruby', f: 262, c: '#9b5de5' },
-      { id: 'mila', f: 330, c: '#ff4d6d' },
-      { id: 'zoe', f: 392, c: '#00bbf9' },
-      { id: 'tigro', f: 523, c: '#fee440' },
+      { id: 'rumi', f: 262, c: '#9b5de5' },
+      { id: 'mira', f: 330, c: '#ff4d6d' },
+      { id: 'zoey', f: 392, c: '#00bbf9' },
+      { id: 'derpy', f: 523, c: '#fee440' },
     ];
     const PRAISE = ['Bravissimi insieme! 🎶', 'Che voce! ✨', 'Perfetto! 🌟', 'Super Star! 🎤', 'Sei una stella! ⭐'];
     const wrap = U.el('div', 'simon');
@@ -91,9 +91,9 @@ App.register({
     }
 
     ctx.intro({
-      title: 'Canta con le Cacciastelle',
-      art: Chars.img('ruby') + Chars.img('mila') + Chars.img('zoe'),
-      text: 'Le Cacciastelle cantano una melodia: guarda chi si illumina e ascolta le note. Poi <b>tocca nello stesso ordine</b>! Ogni volta la melodia si allunga di una nota. Hai 3 vite.',
+      title: 'Canta con le Huntrix',
+      art: Chars.img('rumi') + Chars.img('mira') + Chars.img('zoey'),
+      text: 'Le Huntrix cantano una melodia: guarda chi si illumina e ascolta le note. Poi <b>tocca nello stesso ordine</b>! Ogni volta la melodia si allunga di una nota. Hai 3 vite.',
     }, () => {
       ctx.begin();
       later(next, 300);

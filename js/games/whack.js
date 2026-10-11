@@ -1,12 +1,12 @@
 'use strict';
-/* Acchiappa i Ragazzi Ombra: tocca i demoni che spuntano dalle finestre, non le Cacciastelle. */
+/* Acchiappa i Saja Boys: tocca i demoni che spuntano dalle finestre, non le Huntrix. */
 App.register({
   id: 'acchiappa',
-  title: 'Acchiappa i Ragazzi Ombra',
-  desc: 'I Ragazzi Ombra spuntano dalle finestre: toccali in fretta! Ma non toccare le Cacciastelle.',
+  title: 'Acchiappa i Saja Boys',
+  desc: 'I Saja Boys spuntano dalle finestre: toccali in fretta! Ma non toccare le Huntrix.',
   color: '#6a4cff',
   duration: 45,
-  art: () => Chars.img('misty') + Chars.img('romeo'),
+  art: () => Chars.img('mystery') + Chars.img('romance'),
   stars: p => (p >= 400 ? 3 : p >= 220 ? 2 : p >= 80 ? 1 : 0),
 
   start(ctx) {
@@ -29,7 +29,7 @@ App.register({
     function show(h) {
       const r = Math.random();
       h.kind = r < 0.12 ? 'gold' : r < 0.32 ? 'friend' : 'boy';
-      h.id = h.kind === 'friend' ? U.pick(Chars.girls) : h.kind === 'gold' ? 'jino' : U.pick(Chars.boys);
+      h.id = h.kind === 'friend' ? U.pick(Chars.girls) : h.kind === 'gold' ? 'jinu' : U.pick(Chars.boys);
       h.busy = true; h.tapped = false;
       h.pop.innerHTML = Chars.img(h.id) + (h.kind === 'gold' ? '<span class="crown">👑</span>' : '');
       h.el.classList.remove('hit', 'oops');
@@ -81,9 +81,9 @@ App.register({
     }
 
     ctx.intro({
-      title: 'Acchiappa i Ragazzi Ombra',
-      art: Chars.img('jino') + Chars.img('abe') + Chars.img('bebo'),
-      text: 'I Ragazzi Ombra si affacciano alle finestre: toccali! <b>+10</b>. Jino con la corona 👑 vale <b>+30</b>. Ma se tocchi Ruby, Mila o Zoe perdi <b>20 punti</b>! Hai 45 secondi.',
+      title: 'Acchiappa i Saja Boys',
+      art: Chars.img('jinu') + Chars.img('abby') + Chars.img('baby'),
+      text: 'I Saja Boys si affacciano alle finestre: toccali! <b>+10</b>. Jinu con la corona 👑 vale <b>+30</b>. Ma se tocchi Rumi, Mira o Zoey perdi <b>20 punti</b>! Hai 45 secondi.',
     }, () => {
       running = true;
       info();
@@ -96,7 +96,7 @@ App.register({
         running = false;
         ctx.end({
           title: 'Tempo scaduto! ⏰',
-          msg: `Ragazzi Ombra acchiappati: <b>${caught}</b>${golds ? ` (👑 ${golds})` : ''}${oops ? `<br>Cacciastelle toccate per sbaglio: ${oops}` : '<br>Nessuna amica toccata: perfetto!'}`,
+          msg: `Saja Boys acchiappati: <b>${caught}</b>${golds ? ` (👑 ${golds})` : ''}${oops ? `<br>Huntrix toccate per sbaglio: ${oops}` : '<br>Nessuna amica toccata: perfetto!'}`,
         });
       },
       stop() { running = false; timers.forEach(clearTimeout); },

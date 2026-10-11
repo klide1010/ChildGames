@@ -6,7 +6,7 @@ App.register({
   desc: 'Un personaggio si è nascosto in mezzo alla folla: scovalo più in fretta che puoi!',
   color: '#ff9f1c',
   duration: null,
-  art: () => Chars.img('bebo') + '<span class="emo">🔍</span>',
+  art: () => Chars.img('baby') + '<span class="emo">🔍</span>',
   stars: p => (p >= 1050 ? 3 : p >= 700 ? 2 : p >= 300 ? 1 : 0),
 
   start(ctx) {
@@ -36,7 +36,7 @@ App.register({
 
     function next() {
       round++;
-      // nei round dispari si cerca un Ragazzo Ombra (in mezzo ad altri Ragazzi Ombra: più difficile!)
+      // nei round dispari si cerca un Saja Boy (in mezzo ad altri Saja Boys: più difficile!)
       target = round % 2 ? U.pick(Chars.boys) : U.pick(Chars.ids);
       const others = Chars.ids.filter(i => i !== target);
       count = Math.min(42, 8 + round * 4);
@@ -91,7 +91,7 @@ App.register({
 
     ctx.intro({
       title: 'Trova l’Ombra',
-      art: Chars.img('misty') + '<span class="emo">🔍</span>',
+      art: Chars.img('mystery') + '<span class="emo">🔍</span>',
       text: 'In alto vedi chi devi cercare: trovalo nella folla e toccalo! Più sei veloce, più punti prendi. Ogni tocco sbagliato costa <b>10 punti</b>. Sono 8 round, sempre più affollati!',
     }, () => { ctx.begin(); next(); });
 

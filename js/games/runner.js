@@ -1,18 +1,18 @@
 'use strict';
-/* Saetta Corre: tocca per saltare, raccogli anelli, salta sui granchi, evita le spine. */
+/* Sonic Corre: tocca per saltare, raccogli anelli, salta sui granchi, evita le spine. */
 App.register({
   id: 'corsa',
-  title: 'Saetta Corre',
+  title: 'Sonic Corre',
   desc: 'Tocca lo schermo per saltare! Raccogli gli anelli ed evita le spine.',
   color: '#1f6fe5',
   duration: null,
-  art: () => Chars.img('saetta') + '<span class="ring-ico"></span>',
+  art: () => Chars.img('sonic') + '<span class="ring-ico"></span>',
   stars: p => (p >= 800 ? 3 : p >= 350 ? 2 : p >= 100 ? 1 : 0),
 
   start(ctx) {
     const cv = ctx.canvas();
     const g = cv.g;
-    const img = Chars.image('saetta');
+    const img = Chars.image('sonic');
     const { rand } = U;
     const EMOJI_FONT = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 
@@ -26,13 +26,16 @@ App.register({
     let held = 0, total = 0, lives = 3, stomps = 0, dist = 0, distAcc = 0, scroll = 0;
     let nextObs = W * 0.9, nextRing = W * 0.3;
 
-    const grav = () => H * 3.2;
+    // gravità e salti misurati sulla taglia di Sonic: stesso salto su ogni telefono
+    const grav = () => S * 22;
 
     function info() { ctx.info(`💍 ${held} · ${U.hearts(lives)}`); }
 
     function jump() {
       if (!running || P.jumps >= 2) return;
-      P.vy = -Math.sqrt(2 * grav() * (P.jumps ? H * 0.26 : H * 0.4));
+      // 1° tocco: salto medio (supera gli ostacoli e prende gli anelli a metà altezza)
+      // 2° tocco in aria: piccolo balzo in più per gli anelli più alti
+      P.vy = -Math.sqrt(2 * grav() * (P.jumps ? S * 0.75 : S * 1.4));
       P.jumps++;
       Sound.tone(P.jumps === 1 ? 520 : 760, 0.12, 'square', 0.06);
     }
@@ -47,10 +50,10 @@ App.register({
     function spawnRings() {
       const n = U.ri(3, 6), gap = S * 0.62;
       const arc = Math.random() < 0.5;
-      const baseY = ground - S * rand(0.5, 1.9);
+      const baseY = ground - S * rand(0.6, 1.7);
       for (let i = 0; i < n; i++) {
         const k = n > 1 ? i / (n - 1) : 0.5;
-        const y = arc ? ground - S * 0.6 - Math.sin(k * Math.PI) * S * 1.6 : baseY;
+        const y = arc ? ground - S * 0.6 - Math.sin(k * Math.PI) * S * 1.4 : baseY;
         rings.push({ x: W + S + i * gap, y });
       }
     }
@@ -119,7 +122,7 @@ App.register({
       });
 
       for (const l of lost) {
-        l.vy += grav() * dt * 0.6; l.x += l.vx * dt - dx; l.y += l.vy * dt; l.life -= dt;
+        l.vy += grav() * dt; l.x += l.vx * dt - dx; l.y += l.vy * dt; l.life -= dt;
         if (l.y > ground) { l.y = ground; l.vy *= -0.6; }
       }
       lost = lost.filter(l => l.life > 0);
@@ -135,7 +138,7 @@ App.register({
             ctx.add(20);
             ctx.popup('+20', o.x + o.w / 2, ot - 10, 'gold');
             Sound.good();
-            P.vy = -Math.sqrt(2 * grav() * H * 0.18);
+            P.vy = -Math.sqrt(2 * grav() * S * 0.9);
             P.jumps = 1;
           } else if (P.inv <= 0) {
             hit();
@@ -160,7 +163,11 @@ App.register({
     }
 
     function draw() {
-      g.clearRect(0, 0, W, H);
+      // cielo disegnato nel canvas (canvas opaco: si aggiorna sempre bene anche sui telefoni)
+      const sky = g.createLinearGradient(0, 0, 0, ground);
+      sky.addColorStop(0, '#4fb3ff'); sky.addColorStop(1, '#d8f1ff');
+      g.fillStyle = sky;
+      g.fillRect(0, 0, W, H);
 
       // nuvole
       g.fillStyle = 'rgba(255,255,255,.85)';
@@ -231,7 +238,7 @@ App.register({
         }
       }
 
-      // Saetta
+      // Sonic
       const blink = P.inv > 0 && Math.floor(P.inv * 12) % 2 === 0;
       if (!blink && img.complete) {
         if (P.y < ground - 1) {
@@ -270,9 +277,9 @@ App.register({
     raf = requestAnimationFrame(loop);
 
     ctx.intro({
-      title: 'Saetta Corre',
-      art: Chars.img('saetta'),
-      text: 'Tocca lo schermo per <b>saltare</b> (tocca ancora in aria per il doppio salto!). Ogni anello vale <b>+10</b> e ti protegge. Salta sopra i granchi 🦀 per <b>+20</b>. Attento alle spine: hai 3 vite!',
+      title: 'Sonic Corre',
+      art: Chars.img('sonic'),
+      text: 'Tocca lo schermo per <b>saltare</b>. Tocca ancora mentre sei in aria per un <b>piccolo balzo</b> in più! Ogni anello vale <b>+10</b> e ti protegge. Salta sopra i granchi 🦀 per <b>+20</b>. Attento alle spine: hai 3 vite!',
     }, () => {
       running = true;
       info();
