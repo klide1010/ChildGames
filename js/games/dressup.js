@@ -18,13 +18,15 @@ const Dress = (() => {
     sonic:    { label: '💨 Sonic', color: '#1f6fe5' },
     halloween: { label: '🎃 Halloween', color: '#2b2d42' },
     xmas:     { label: '🎄 Natale', color: '#c1121f' },
+    '70':     { label: '🌼 Anni 70', color: '#c98a00' },
+    hero:     { label: '🦸 Supereroi', color: '#3a0ca3' },
   };
 
   /* ---------- registro di motivi e sfumature (defs SVG) ---------- */
   function registry() {
     const defs = new Map();
     function make(id, spec) {
-      const [k, a, b, c] = spec;
+      const [k, a, b, c, e] = spec;
       const P = (w, h, inner) => `<pattern id="${id}" width="${w}" height="${h}" patternUnits="userSpaceOnUse">${inner}</pattern>`;
       switch (k) {
         case 'flowers': {
@@ -41,6 +43,7 @@ const Dress = (() => {
         case 'zigzag': return P(12, 10, `<rect width="12" height="10" fill="${a}"/><path d="M0 7 L3 3 L6 7 L9 3 L12 7" stroke="${b}" stroke-width="2.2" fill="none"/>`);
         case 'stars': return P(14, 14, `<rect width="14" height="14" fill="${a}"/><path d="M4 1 L5 4 L8 4 L5.5 6 L6.5 9 L4 7 L1.5 9 L2.5 6 L0 4 L3 4 Z" fill="${b}"/><circle cx="11" cy="11" r="1.2" fill="${b}"/>`);
         case 'denim': return P(6, 6, `<rect width="6" height="6" fill="${a}"/><path d="M0 6 L6 0" stroke="${b}" stroke-width="1"/>`);
+        case 'swirl': return P(28, 28, `<rect width="28" height="28" fill="${a}"/><circle cx="14" cy="14" r="12" fill="${b}"/><circle cx="14" cy="14" r="8" fill="${c}"/><circle cx="14" cy="14" r="4" fill="${e}"/><circle cx="0" cy="0" r="6" fill="${c}"/><circle cx="28" cy="28" r="6" fill="${c}"/>`);
         case 'grad': return `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
         default: return '';
       }
@@ -302,6 +305,28 @@ const Dress = (() => {
     ['elfhat', 'hat', 'Cappello da elfo', '🧝', 'xmas', () => '<path d="M66 50 Q100 28 134 50 L152 8 Z" fill="#2d6a4f"/><path d="M66 50 Q100 30 134 50 L134 57 Q100 38 66 57 Z" fill="#c1121f"/><circle cx="152" cy="8" r="5" fill="#ffd23f"/>'],
     ['scarf', 'acc', 'Sciarpa a righe', '🧣', 'xmas', p => `<path d="M80 110 Q100 122 120 110 L122 124 Q100 136 78 124 Z" fill="${p(['vstripes', '#c1121f', '#2d6a4f'])}" ${OUT}/><path d="M110 122 L118 170 L106 172 L100 126 Z" fill="${p(['stripes', '#c1121f', '#2d6a4f'])}" ${OUT}/>`, 'neck'],
     ['gift', 'acc', 'Regalo', '🎁', 'xmas', () => '<rect x="130" y="214" width="24" height="22" rx="2" fill="#2a9d8f" stroke="#1d6f66"/><rect x="139" y="214" width="6" height="22" fill="#ffd23f"/><rect x="130" y="222" width="24" height="6" fill="#ffd23f"/><path d="M142 214 Q132 202 137 212 M142 214 Q152 202 147 212" stroke="#ffd23f" stroke-width="3" fill="none"/>', 'hand'],
+    // ANNI 70
+    ['hippieblouse', 'top', 'Camicia hippie', '🌼', '70', p => path(SH.longSleeves, '#fff4dc') + '<path d="M53 210 L46 222 L72 220 L67 214 Z M147 210 L154 222 L128 220 L133 214 Z" fill="#fff4dc" stroke="rgba(0,0,0,.28)" stroke-width="1.2"/>' + path(SH.teeBody, '#fff4dc') + flowerAt(88, 132, 3.2, '#ff7b00', '#ffd23f') + flowerAt(112, 132, 3.2, '#e63946', '#ffd23f') + flowerAt(100, 140, 3.2, '#2a9d8f', '#ffd23f') + '<path d="M92 120 L100 134 L108 120" stroke="#c98a00" stroke-width="1.5" fill="none"/>'],
+    ['tiedye', 'top', 'Maglia tie-dye', '🌀', '70', p => path(SH.teeSleeves, p(['swirl', '#ff6f91', '#ffd23f', '#2a9d8f', '#7b2cbf'])) + path(SH.teeBody, p(['swirl', '#ff6f91', '#ffd23f', '#2a9d8f', '#7b2cbf']))],
+    ['bellbottoms', 'bottom', 'Pantaloni a zampa', '🟤', '70', p => path(SH.flare, p(['vstripes', '#a0522d', '#8b4513'])) + flowerAt(84, 320, 4, '#ffd23f', '#e63946') + '<circle cx="117" cy="280" r="6" fill="#2a9d8f" stroke="#fff" stroke-width="1.5"/><path d="M114 280 L120 280 M117 277 L117 283" stroke="#fff" stroke-width="1.5"/>'],
+    ['suede', 'bottom', 'Gonna con frange', '🪶', '70', p => path(SH.skirt, '#b5651d') + Array.from({ length: 15 }, (_, i) => `<path d="M${58 + i * 6} 258 L${57 + i * 6} 272" stroke="#8b4513" stroke-width="2"/>`).join('')],
+    ['disco', 'dress', 'Tuta disco dorata', '🪩', '70', p => path(SH.longSleeves, p(['stars', '#e9c46a', '#fff'])) + path(SH.teeBody, p(['stars', '#e9c46a', '#fff'])) + path(SH.flare, p(['stars', '#e9c46a', '#fff'])) + collar('#c98a00') + '<rect x="72" y="196" width="56" height="7" fill="#c1121f"/>'],
+    ['platform70', 'shoes', 'Stivaloni con zeppa', '👢', '70', () => both('<path d="M78 306 L100 306 L101 354 L77 354 Z" fill="#ff7b00"/><rect x="74" y="352" width="30" height="14" rx="3" fill="#8b4513"/><path d="M78 318 L100 318" stroke="#ffd23f" stroke-width="3"/>')],
+    ['flowerband', 'hat', 'Fascia con margherita', '🌼', '70', () => '<path d="M64 56 Q100 40 136 56" stroke="#e63946" stroke-width="5" fill="none"/>' + flowerAt(72, 50, 7, '#fff', '#ffd23f')],
+    ['hippieglasses', 'glasses', 'Occhiali hippie', '🕶️', '70', () => '<circle cx="88" cy="76" r="11" fill="rgba(255,123,0,.55)" stroke="#c98a00" stroke-width="2"/><circle cx="112" cy="76" r="11" fill="rgba(255,123,0,.55)" stroke="#c98a00" stroke-width="2"/><path d="M99 75 Q100 72 101 75" stroke="#c98a00" stroke-width="2" fill="none"/>'],
+    ['peace', 'acc', 'Collana della pace', '☮️', '70', () => '<path d="M86 118 Q100 150 114 118" stroke="#8b4513" stroke-width="1.8" fill="none"/><circle cx="100" cy="148" r="8" fill="none" stroke="#c98a00" stroke-width="2.5"/><path d="M100 140 L100 156 M100 148 L94 154 M100 148 L106 154" stroke="#c98a00" stroke-width="2.2"/>', 'neck'],
+
+    // SUPEREROI
+    ['herosuit', 'top', 'Tuta da supereroe', '🦸', 'hero', p => path(SH.longSleeves, '#1f6fe5') + path(SH.teeBody, '#1f6fe5') + '<path d="M84 140 L116 140 L100 172 Z" fill="#ffd23f" stroke="#c99a00"/><polygon points="103,144 94,158 100,158 96,168 108,152 102,152" fill="#e63946"/><rect x="69" y="196" width="62" height="8" fill="#ffd23f"/>'],
+    ['herostar', 'top', 'Maglia con stella', '⭐', 'hero', p => path(SH.teeSleeves, '#e63946') + path(SH.teeBody, '#e63946') + `<circle cx="100" cy="158" r="17" fill="#1f6fe5"/><polygon points="${starPath(100, 158, 13)}" fill="#fff"/>`],
+    ['herotights', 'bottom', 'Calzamaglia', '🔴', 'hero', p => path(SH.leggings, '#e63946')],
+    ['heroshorts', 'bottom', 'Pantaloncini da eroe', '💥', 'hero', p => path(SH.shorts, p(['stars', '#1d3557', '#fff']))],
+    ['herojumpsuit', 'dress', 'Costume intero', '⚡', 'hero', p => path(SH.longSleeves, '#7b2cbf') + path(SH.teeBody, '#7b2cbf') + path(SH.leggings, '#7b2cbf') + '<circle cx="100" cy="155" r="15" fill="#ffd23f"/><polygon points="104,142 92,158 99,158 95,170 109,152 102,152" fill="#7b2cbf"/><rect x="71" y="196" width="58" height="8" fill="#ffd23f"/><path d="M53 196 L67 200 M147 196 L133 200" stroke="#ffd23f" stroke-width="5"/>'],
+    ['heroboots', 'shoes', 'Stivali da eroe', '🥾', 'hero', () => both('<path d="M77 300 L101 294 L101 360 L77 360 Z" fill="#e63946" stroke="#9d0208"/><rect x="75" y="358" width="28" height="7" rx="2" fill="#9d0208"/>')],
+    ['heroband', 'hat', 'Fascia con stella', '🌟', 'hero', () => `<path d="M64 52 Q100 36 136 52 L136 58 Q100 42 64 58 Z" fill="#ffd23f" stroke="#c99a00"/><polygon points="${starPath(100, 44, 8)}" fill="#e63946"/>`],
+    ['eyemask', 'glasses', 'Maschera da eroe', '🎭', 'hero', () => '<path d="M70 70 Q85 62 100 70 Q115 62 130 70 L138 66 L132 82 Q115 88 100 80 Q85 88 68 82 L62 66 Z M81 75 a7 5 0 1 0 14 0 a7 5 0 1 0 -14 0 Z M105 75 a7 5 0 1 0 14 0 a7 5 0 1 0 -14 0 Z" fill="#e63946" fill-rule="evenodd" stroke="#9d0208" stroke-width="1"/>'],
+    ['cape', 'acc', 'Mantello', '🦸', 'hero', () => '<path d="M72 118 L128 118 L156 330 Q128 342 100 334 Q72 342 44 330 Z" fill="#e63946" stroke="#9d0208" stroke-width="1.5"/><path d="M100 124 L100 330" stroke="#9d0208" stroke-width="1" opacity=".4"/>', 'back'],
+    ['shield', 'acc', 'Scudo', '🛡️', 'hero', () => `<circle cx="146" cy="222" r="17" fill="#e63946" stroke="#9d0208"/><circle cx="146" cy="222" r="12" fill="#fff"/><circle cx="146" cy="222" r="8" fill="#1f6fe5"/><polygon points="${starPath(146, 222, 7)}" fill="#fff"/>`, 'hand'],
   ];
 
   /* ---------- sfondi ---------- */
@@ -317,6 +342,8 @@ const Dress = (() => {
     ['greenhill', 'Collina verde', '🌄', 'sonic', p => `<rect width="200" height="380" fill="${p(['grad', '#4fb3ff', '#d8f1ff'])}"/><ellipse cx="40" cy="300" rx="90" ry="80" fill="#7fd46b"/><ellipse cx="170" cy="300" rx="80" ry="60" fill="#3fae4a"/>` + Array.from({ length: 50 }, (_, i) => `<rect x="${(i % 10) * 20}" y="${306 + Math.floor(i / 10) * 20}" width="20" height="20" fill="${(i % 10 + Math.floor(i / 10)) % 2 ? '#9a5a1c' : '#c47a2c'}"/>`).join('') + '<rect y="296" width="200" height="12" fill="#4cc94c"/>' + [30, 52, 74, 126, 148, 170].map(x => `<circle cx="${x}" cy="246" r="7" fill="none" stroke="#c99a00" stroke-width="4"/><circle cx="${x}" cy="246" r="7" fill="none" stroke="#ffd23f" stroke-width="2.2"/>`).join('')],
     ['haunted', 'Notte di Halloween', '🦇', 'halloween', p => `<rect width="200" height="380" fill="${p(['grad', '#0b132b', '#3a506b'])}"/><circle cx="150" cy="62" r="26" fill="#fff3b0"/><circle cx="160" cy="56" r="24" fill="#22304d" opacity=".25"/>` + [[40, 50], [70, 80], [120, 110]].map(([x, y]) => `<path d="M${x} ${y} q-8 -8 -16 -2 q4 2 4 6 q4 -4 8 0 q4 -4 8 0 q0 -4 4 -6 q-8 -6 -16 2 Z" fill="#0b0b14" transform="translate(8 0)"/>`).join('') + '<path d="M14 300 L14 196 L44 166 L74 196 L74 156 L90 132 L106 156 L106 300 Z" fill="#0b0b14"/><rect x="26" y="214" width="12" height="14" fill="#ffd23f"/><rect x="84" y="176" width="10" height="12" fill="#ffd23f"/><rect y="300" width="200" height="80" fill="#1b1b2f"/>' + [[150, 322, 14], [178, 332, 10], [130, 340, 9]].map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * 0.8}" fill="#f48c06" stroke="#9d4a00"/><rect x="${x - 1.5}" y="${y - r * 0.8 - 5}" width="3" height="6" fill="#2d6a4f"/>`).join('')],
     ['xmasnight', 'Notte di Natale', '🎄', 'xmas', p => `<rect width="200" height="380" fill="${p(['grad', '#0b2545', '#13315c'])}"/>` + Array.from({ length: 30 }, (_, i) => `<circle cx="${(i * 47) % 200}" cy="${(i * 83) % 290}" r="${1.2 + (i % 3)}" fill="#fff" opacity=".85"/>`).join('') + '<path d="M0 300 Q50 288 100 300 T200 300 L200 380 L0 380 Z" fill="#f1f5ff"/><polygon points="170,150 145,210 195,210" fill="#2d6a4f"/><polygon points="170,180 140,250 200,250" fill="#2d6a4f"/><polygon points="170,215 136,292 204,292" fill="#2d6a4f"/><rect x="165" y="292" width="10" height="12" fill="#8d5a32"/>' + [[160, 205, '#e63946'], [178, 232, '#ffd23f'], [155, 262, '#4dd0ff'], [184, 280, '#e63946'], [168, 250, '#fff']].map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="3.5" fill="${c}"/>`).join('') + `<polygon points="${starPath(170, 146, 9)}" fill="#ffd23f"/>` + '<rect x="120" y="292" width="20" height="16" fill="#c1121f"/><rect x="128" y="292" width="4" height="16" fill="#ffd23f"/><rect x="18" y="296" width="18" height="14" fill="#2a9d8f"/><rect x="25" y="296" width="4" height="14" fill="#fff"/>'],
+    ['discofloor', 'Pista da ballo', '🪩', '70', () => '<rect width="200" height="380" fill="#2b0a3d"/>' + Array.from({ length: 6 }, (_, i) => `<polygon points="100,40 ${-40 + i * 56},300 ${-20 + i * 56},300" fill="${['#ff6f91', '#ffd23f', '#2a9d8f', '#7b2cbf', '#ff7b00', '#4dd0ff'][i]}" opacity=".18"/>`).join('') + '<path d="M100 0 L100 22" stroke="#999" stroke-width="2"/><circle cx="100" cy="40" r="20" fill="#cfd8dc"/>' + Array.from({ length: 16 }, (_, i) => `<rect x="${84 + (i % 4) * 8}" y="${24 + Math.floor(i / 4) * 8}" width="7" height="7" fill="${i % 3 ? '#eceff1' : '#90a4ae'}"/>`).join('') + Array.from({ length: 40 }, (_, i) => `<rect x="${(i % 8) * 25}" y="${300 + Math.floor(i / 8) * 16}" width="25" height="16" fill="${['#ff6f91', '#ffd23f', '#2a9d8f', '#7b2cbf', '#ff7b00'][(i + Math.floor(i / 8)) % 5]}" stroke="#2b0a3d" stroke-width="1.5"/>`).join('')],
+    ['city', 'Città dei supereroi', '🏙️', 'hero', p => `<rect width="200" height="380" fill="${p(['grad', '#1b1b4a', '#5a4fcf'])}"/><circle cx="160" cy="54" r="18" fill="#fff3b0"/>` + [[0, 200, 34], [30, 160, 30], [58, 230, 26], [84, 140, 36], [118, 190, 28], [144, 120, 30], [172, 210, 28]].map(([x, y, w]) => `<rect x="${x}" y="${y}" width="${w}" height="${380 - y}" fill="#14123a"/>` + Array.from({ length: 6 }, (_, k) => `<rect x="${x + 5 + (k % 2) * (w / 2 - 2)}" y="${y + 10 + Math.floor(k / 2) * 18}" width="6" height="8" fill="#ffd23f" opacity="${k % 3 ? .9 : .3}"/>`).join('')).join('') + '<polygon points="22,40 34,58 54,50 44,68 62,80 40,82 42,104 28,88 12,100 16,78 0,70 18,62" fill="#ffd23f" stroke="#e63946" stroke-width="2"/><text x="31" y="76" font-size="12" font-weight="900" fill="#e63946" text-anchor="middle" font-family="Arial">POW!</text>'],
   ];
 
   const ITEMS = {};
@@ -335,6 +362,8 @@ const Dress = (() => {
     sonic: { top: 'sonictop', bottom: 'sonicpants', shoes: 'sonicshoes', hat: 'sonicears', acc: 'sonicgloves', bg: 'greenhill' },
     halloween: { dress: 'witchdress', shoes: 'witchboots', hat: 'witchhat', glasses: 'batmask', acc: 'candybucket', bg: 'haunted' },
     xmas: { dress: 'santadress', shoes: 'santaboots', hat: 'santahat', acc: 'gift', bg: 'xmasnight' },
+    '70': { top: 'hippieblouse', bottom: 'bellbottoms', shoes: 'platform70', hat: 'flowerband', glasses: 'hippieglasses', acc: 'peace', bg: 'discofloor' },
+    hero: { top: 'herosuit', bottom: 'herotights', shoes: 'heroboots', hat: 'heroband', glasses: 'eyemask', acc: 'cape', bg: 'city' },
   };
 
   const SLOTS = ['top', 'bottom', 'dress', 'shoes', 'hat', 'glasses', 'acc', 'bg'];
@@ -348,6 +377,7 @@ const Dress = (() => {
     let s = '';
     s += it('bg') ? it('bg').draw(p) : '<rect width="200" height="380" fill="#efe9ff"/>';
     s += '<ellipse cx="100" cy="368" rx="44" ry="7" fill="rgba(0,0,0,.18)"/>';
+    if (acc && acc.layer === 'back') s += acc.draw(p);
     s += hairBack(d) + body(d);
     if (it('shoes')) s += it('shoes').draw(p);
     if (it('dress')) s += it('dress').draw(p);
@@ -374,7 +404,7 @@ const Dress = (() => {
 App.register({
   id: 'vesti',
   title: 'Vesti la Bambola',
-  desc: 'Scegli una bambola e vestila: Hawaii, anni 80, 90, 2000, Huntrix, Sonic, Halloween, Natale... Poi fai la foto e condividila!',
+  desc: 'Scegli una bambola e vestila: Hawaii, anni 70, 80, 90, 2000, Huntrix, Sonic, supereroi, Halloween, Natale... Poi fai la foto e condividila!',
   color: '#ff4fa3',
   duration: null,
   art: () => `<span class="dress-art">${Dress.headSVG('luna')}</span><span class="emo">👗</span>`,
