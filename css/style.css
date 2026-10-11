@@ -53,9 +53,12 @@ img.ch { display: block; width: 100%; height: 100%; object-fit: contain; pointer
 }
 .menu-head { position: relative; flex-direction: column; text-align: center; gap: 2px; padding-top: 10px; }
 .menu-head .logo {
-  width: min(64vw, 300px);
+  width: min(62vw, 340px);
   height: auto;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .3));
+  border-radius: 24px;
+  border: 5px solid #fff;
+  box-shadow: 0 0 0 4px var(--gold), 0 10px 24px rgba(0, 0, 0, .35);
+  margin: 6px 0 8px;
   animation: wobble 3s ease-in-out infinite;
 }
 .menu-head #sound-btn { position: absolute; top: 12px; right: 16px; }
