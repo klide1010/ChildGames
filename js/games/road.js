@@ -11,7 +11,7 @@ App.register({
   color: '#ff7b00',
   duration: null,
   art: () => '<span class="emo">🏎️</span><span class="emo">🌴</span>',
-  stars: p => (p >= 1500 ? 3 : p >= 700 ? 2 : p >= 250 ? 1 : 0),
+  stars: p => (p >= 2500 ? 3 : p >= 1200 ? 2 : p >= 400 ? 1 : 0),
 
   start(ctx) {
     const cv = ctx.canvas();
@@ -31,7 +31,9 @@ App.register({
     const camDepth = 1 / Math.tan(50 * Math.PI / 180);
     const playerZ = CAM_H * camDepth;
     const MAX = SEG * 60;                 // velocità massima "base" (unità al secondo)
-    const START_TIME = 35, CHECK_BONUS = 20;
+    const START_TIME = 35;
+    // il bonus dei checkpoint cala: 20, 18, 16 ... fino a 8 secondi
+    const checkBonus = () => Math.max(8, 20 - checkpoints * 2);
 
     /* ---------- costruzione del percorso ---------- */
     const segs = [];
@@ -75,16 +77,24 @@ App.register({
 
     /* ---------- traffico ---------- */
     const COLORS = ['#ffd23f', '#06d6a0', '#118ab2', '#ef476f', '#8338ec', '#ffffff', '#ff9f1c', '#3a86ff'];
+    const LANES = [-0.66, 0, 0.66];
+    const MAX_CARS = 170;
     const cars = [];
-    for (let i = 0; i < 34; i++) {
+    function addCar(z) {
       const k = pick(['car', 'car', 'car', 'van', 'bus']);
+      const off = pick(LANES);
       cars.push({
-        z: rand(SEG * 40, L - SEG * 10),
-        off: pick([-0.66, 0, 0.66]) + rand(-0.12, 0.12),
+        z: ((z % L) + L) % L,
+        off, target: off,
         speed: MAX * rand(0.22, 0.5),
         kind: k, w: k === 'bus' ? 0.42 : k === 'van' ? 0.34 : 0.3,
         color: pick(COLORS), prev: null,
       });
+    }
+    for (let i = 0; i < 55; i++) addCar(rand(SEG * 40, L - SEG * 10));
+    // a ogni checkpoint arriva altro traffico davanti al giocatore
+    function moreTraffic(n) {
+      for (let i = 0; i < n && cars.length < MAX_CARS; i++) addCar(position + playerZ + SEG * rand(60, 400));
     }
 
     /* ---------- stato della corsa ---------- */
@@ -113,7 +123,8 @@ App.register({
     window.addEventListener('keydown', kd);
     window.addEventListener('keyup', ku);
 
-    function info() { ctx.info(`${V.icon} 🏁 ${checkpoints} · 🔀 ${overtakes}`); }
+    const level = () => 1 + checkpoints;
+    function info() { ctx.info(`${V.icon} Livello ${level()} · 🔀 ${overtakes}`); }
 
     /* ---------- logica ---------- */
     function update(dt) {
@@ -124,7 +135,8 @@ App.register({
       // sterzo e forza centrifuga in curva
       const dx = dt * V.steer * Math.min(1, sp + 0.25);
       playerX += steer * dx;
-      playerX -= dx * sp * pseg.curve * 0.22;
+      // le curve spingono sempre di più a ogni livello
+      playerX -= dx * sp * pseg.curve * (0.22 + 0.02 * Math.min(6, checkpoints));
       lean += (steer * 0.12 - lean) * Math.min(1, dt * 8);
 
       // accelerazione automatica, fuori strada si rallenta
@@ -141,6 +153,14 @@ App.register({
       for (const c of cars) {
         c.z = (c.z + c.speed * dt) % L;
         const rel = (((c.z - (position + playerZ)) % L) + L) % L;
+        // cambi di corsia improvvisi, sempre più frequenti (solo per le auto davanti, ben visibili)
+        if (rel > SEG * 15 && rel < SEG * DRAW && Math.random() < dt * Math.min(0.3, 0.04 * level())) {
+          c.target = pick(LANES.filter(l => Math.abs(l - c.target) > 0.1));
+        }
+        if (c.off !== c.target) {
+          const step = 0.7 * dt;
+          c.off = Math.abs(c.target - c.off) <= step ? c.target : c.off + Math.sign(c.target - c.off) * step;
+        }
         if (c.prev != null && c.prev < SEG * 8 && rel > L - SEG * 8) {
           overtakes++;
           ctx.add(20);
@@ -153,14 +173,17 @@ App.register({
         if (near && crashT <= 0 && speed > c.speed && Math.abs(playerX - c.off) < (V.w + c.w) / 2) {
           if (V.push) {
             c.off += (c.off >= playerX ? 1 : -1) * 0.7;
+            c.target = c.off;
             speed *= V.crash;
+            timeLeft -= 2;
             pushes++;
             ctx.add(10);
-            ctx.popup('Spinta! +10', cv.W / 2, cv.H * 0.6, 'combo');
+            ctx.popup('Spinta! +10 · -2s', cv.W / 2, cv.H * 0.6, 'combo');
             Sound.tone(150, 0.2, 'square', 0.08);
           } else {
             speed *= V.crash;
-            ctx.popup('Bump! 💥', cv.W / 2, cv.H * 0.6, 'bad');
+            timeLeft -= 3;
+            ctx.popup('Bump! 💥 -3s', cv.W / 2, cv.H * 0.6, 'bad');
             Sound.bad(); U.vibrate(120);
           }
           shake = 0.35;
@@ -180,10 +203,13 @@ App.register({
         for (const ci of CHECKS) {
           const crossed = idx > prevIdx ? (ci > prevIdx && ci <= idx) : (ci > prevIdx || ci <= idx);
           if (crossed) {
+            const bonus = checkBonus();
             checkpoints++;
-            timeLeft += CHECK_BONUS;
+            timeLeft += bonus;
             ctx.add(100);
-            ctx.popup(`CHECKPOINT! +${CHECK_BONUS}s`, cv.W / 2, cv.H * 0.3, 'gold');
+            moreTraffic(14);
+            ctx.popup(`CHECKPOINT! +${bonus}s`, cv.W / 2, cv.H * 0.3, 'gold');
+            setTimeout(() => { if (running) ctx.popup(`Livello ${level()}: più traffico! 🚗`, cv.W / 2, cv.H * 0.38, 'combo'); }, 900);
             Sound.win();
             info();
           }
@@ -197,7 +223,7 @@ App.register({
         running = false;
         ctx.end({
           title: 'Tempo scaduto! 🏁',
-          msg: `${V.icon} ${V.name} · Distanza: <b>${(distance / MAX * 240 / 3600).toFixed(1)} km</b><br>Sorpassi: <b>${overtakes}</b> · Checkpoint: <b>${checkpoints}</b>${pushes ? ` · Spinte: <b>${pushes}</b>` : ''}`,
+          msg: `${V.icon} ${V.name} · Distanza: <b>${(distance / MAX * 240 / 3600).toFixed(1)} km</b><br>Livello raggiunto: <b>${level()}</b> · Sorpassi: <b>${overtakes}</b>${pushes ? ` · Spinte: <b>${pushes}</b>` : ''}`,
         });
       }
     }
@@ -488,7 +514,7 @@ App.register({
     ctx.intro({
       title: 'Corsa su Strada',
       art: '<span class="emo">🏍️</span><span class="emo">🏎️</span><span class="emo">🚛</span>',
-      text: 'Il veicolo accelera da solo: <b>tieni premuto a sinistra o a destra</b> per sterzare. Sorpassa le macchine (<b>+20</b>) e arriva ai <b>CHECKPOINT</b> per avere più tempo (<b>+20 secondi</b>). Scegli con cosa correre:',
+      text: 'Il veicolo accelera da solo: <b>tieni premuto a sinistra o a destra</b> per sterzare. Sorpassa le macchine (<b>+20</b>) e arriva ai <b>CHECKPOINT</b> per avere più tempo. Ma attenzione: ogni urto toglie secondi, e a ogni livello arrivano più macchine che cambiano corsia! Scegli con cosa correre:',
       buttons: [
         { label: '🏍️ Moto · velocissima e agile', value: 'moto' },
         { label: '🏎️ Auto · la più equilibrata', value: 'auto' },
