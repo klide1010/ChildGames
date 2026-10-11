@@ -500,3 +500,45 @@ img.ch { display: block; width: 100%; height: 100%; object-fit: contain; pointer
   padding: 10px 20px; border-radius: 999px; box-shadow: 0 6px 20px rgba(0, 0, 0, .35);
   animation: pop .3s both; white-space: nowrap;
 }
+
+/* ---------------- GIOCO: vesti la bambola ---------------- */
+.stage-vesti { background: linear-gradient(180deg, #ffe3f3, #f3e8ff); touch-action: auto; }
+.dress { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.dress-view { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 6px; }
+.dress-doll { height: 100%; aspect-ratio: 200 / 380; max-width: 100%; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 18px rgba(0, 0, 0, .18); background: #fff; }
+.dress-doll svg { display: block; width: 100%; height: 100%; }
+.dress-tabs, .dress-items {
+  flex: none; display: flex; gap: 6px; overflow-x: auto; padding: 4px 8px;
+  touch-action: pan-x; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.dress-tabs::-webkit-scrollbar, .dress-items::-webkit-scrollbar { display: none; }
+.dress-tab {
+  flex: none; padding: 5px 12px; border-radius: 999px; background: #fff; font-weight: 800; font-size: 15px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .12); white-space: nowrap;
+}
+.dress-tab.on { background: #ff4fa3; color: #fff; }
+.dress-items { padding-bottom: 6px; }
+.dress-item {
+  flex: none; width: 84px; height: 92px; border-radius: 16px; background: #fff; position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 6px 4px 4px; gap: 2px;
+  border: 3px solid transparent; box-shadow: 0 3px 0 rgba(0, 0, 0, .12); overflow: hidden;
+}
+.dress-item.on { border-color: var(--tc, #ff4fa3); background: #fff6d6; }
+.di-ico { font-size: 30px; line-height: 1.1; }
+.di-face { width: 52px; height: 52px; display: block; }
+.di-face svg { width: 100%; height: 100%; }
+.di-name { font-size: 11.5px; font-weight: 800; line-height: 1.1; text-align: center; color: #2b2140; }
+.di-tag { position: absolute; left: 0; right: 0; bottom: 0; font-style: normal; font-size: 9px; font-weight: 700; color: #fff; background: var(--tc); line-height: 1.5; white-space: nowrap; overflow: hidden; }
+.dress-item .di-name { margin-bottom: 12px; }
+.dress-actions { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 4px 8px 8px; }
+.dress-actions .btn { font-size: 14px; padding: 8px 2px; white-space: nowrap; }
+.dress-flash { position: absolute; inset: 0; background: #fff; z-index: 40; pointer-events: none; animation: flashOut .4s forwards; }
+@keyframes flashOut { to { opacity: 0; } }
+.dress-shot-card { padding: 14px; }
+.dress-shot { display: block; max-width: 100%; max-height: 52vh; margin: 0 auto 12px; border-radius: 14px; box-shadow: 0 4px 14px rgba(0, 0, 0, .25); -webkit-touch-callout: default; user-select: auto; -webkit-user-select: auto; }
+.dress-shot-card a.btn { text-decoration: none; display: inline-block; }
+.dress-hint { font-size: 13px !important; margin: 10px 0 0 !important; color: #6b6385 !important; }
+.dress-art { display: inline-block; width: 58px; height: 58px; }
+.dress-art svg { width: 100%; height: 100%; }
+.dress-art.big { width: 96px; height: 96px; }
+.gc-art .dress-art + .emo { margin-left: -14px; }
