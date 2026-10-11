@@ -15,7 +15,7 @@ Sito di giochi semplici per bambini, pensato per il telefono (funziona anche su 
 | 👻 **Acchiappa i Saja Boys** | Tocca i demoni alle finestre, non le Huntrix | 45 secondi · +10, +30 Jinu 👑, −20 amica |
 | ❓ **Sonic Indovina** | 10 indovinelli: contare, sommare, ombre, sequenze, intrusi | +100 a risposta + fino a 50 di bonus velocità |
 | 🔍 **Trova l’Ombra** | Scova il personaggio nascosto nella folla | 8 round · +100 + bonus velocità, −10 errore |
-| 👗 **Vesti la Bambola** | 7 bambole, 92 capi e accessori (Hawaii, Classico, Anni 80, 90, 2000, Principessa, Sport, Huntrix da concerto, Sonic, Halloween, Natale), 11 sfondi e look pronti; 📸 Foto per salvare o condividere sui social | 10 punti a capo + bonus se almeno 3 capi sono dello stesso stile |
+| 👗 **Vesti la Bambola** | 7 bambole, 111 capi e accessori (Hawaii, Classico, Anni 70, 80, 90, 2000, Principessa, Sport, Supereroi, Huntrix da concerto, Sonic, Halloween, Natale), 13 sfondi e look pronti; 📸 Foto per salvare o condividere sui social | 10 punti a capo + bonus se almeno 3 capi sono dello stesso stile |
 
 Ogni partita mostra **punti, tempo e stelle (da 0 a 3)** e salva la **classifica dei migliori 5** per ogni gioco
 con il nome di chi ha giocato (i record restano sul telefono usato).
