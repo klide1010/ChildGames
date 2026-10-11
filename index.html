@@ -23,6 +23,7 @@
       <img class="logo" src="img/logo.webp" width="720" height="508" alt="I nipoti che fanno la linguaccia">
       <h1>Sala Giochi <span>dei Nipoti</span></h1>
       <button id="sound-btn" class="icon-btn" aria-label="Audio">🔊</button>
+      <button id="session-chip" class="session-chip" aria-label="Tempo di gioco rimasto">⏳</button>
     </header>
 
     <div class="player-box">
@@ -57,6 +58,7 @@
   <script src="js/games/whack.js"></script>
   <script src="js/games/quiz.js"></script>
   <script src="js/games/find.js"></script>
-  <script>App.init();</script>
+  <script src="js/session.js"></script>
+  <script>App.init(); Session.init();</script>
 </body>
 </html>
