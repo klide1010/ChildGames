@@ -325,5 +325,5 @@ const App = (() => {
     renderMenu();
   }
 
-  return { register, init, start, goMenu };
+  return { register, init, start, goMenu, playerName };
 })();
