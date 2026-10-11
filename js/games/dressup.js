@@ -14,6 +14,10 @@ const Dress = (() => {
     '2000':   { label: '📱 Anni 2000', color: '#c084fc' },
     princess: { label: '👑 Principessa', color: '#e9b200' },
     sport:    { label: '⚽ Sport', color: '#2ec27e' },
+    huntrix:  { label: '🎤 Huntrix', color: '#9b5de5' },
+    sonic:    { label: '💨 Sonic', color: '#1f6fe5' },
+    halloween: { label: '🎃 Halloween', color: '#2b2d42' },
+    xmas:     { label: '🎄 Natale', color: '#c1121f' },
   };
 
   /* ---------- registro di motivi e sfumature (defs SVG) ---------- */
@@ -142,6 +146,17 @@ const Dress = (() => {
   const OUT = 'stroke="rgba(0,0,0,.28)" stroke-width="1.2" stroke-linejoin="round"';
   const path = (d, fill, extra = '') => `<path d="${d}" fill="${fill}" ${OUT} ${extra}/>`;
   const collar = c => `<path d="M90 117 L100 128 L96 134 L85 121 Z M110 117 L100 128 L104 134 L115 121 Z" fill="${c}" ${OUT}/>`;
+  // orlo a punte, da destra (x1) a sinistra (x2) all'altezza y
+  const jag = (x1, x2, y, amp, step) => {
+    let d = '';
+    for (let x = x1; x > x2; x -= step) d += ` L${x - step / 2} ${y + amp} L${Math.max(x2, x - step)} ${y}`;
+    return d;
+  };
+  const scallop = (x1, x2, y, amp, step) => {
+    let d = '';
+    for (let x = x1; x > x2; x -= step) d += ` Q${x - step / 2} ${y + amp} ${Math.max(x2, x - step)} ${y}`;
+    return d;
+  };
   const grassHem = () => {
     let d = 'M73 198 L127 198 L142 256';
     for (let x = 142; x > 58; x -= 6) d += ` L${x - 3} ${262 + ((x / 6) % 2) * 4} L${x - 6} 256`;
@@ -244,6 +259,49 @@ const Dress = (() => {
     ['phone', 'acc', 'Cellulare a conchiglia', '📱', '2000', () => '<rect x="51" y="198" width="12" height="22" rx="2.5" fill="#d0d0d0" stroke="#777"/><rect x="53.5" y="201" width="7" height="7" fill="#7fdbff"/><circle cx="57" cy="214" r="1.5" fill="#777"/>', 'hand'],
     ['bag', 'acc', 'Borsetta glitter', '👛', '2000', p => `<path d="M136 222 Q141 208 148 222" stroke="#c084fc" stroke-width="2.5" fill="none"/><rect x="130" y="221" width="26" height="20" rx="5" fill="${p(['dots', '#c084fc', '#fff'])}" ${OUT}/><circle cx="143" cy="225" r="2" fill="#ffd23f"/>`, 'hand'],
     ['medal', 'acc', 'Medaglia d’oro', '🏅', 'sport', () => '<path d="M90 119 L100 150 L110 119" stroke="#1d3557" stroke-width="5" fill="none"/><circle cx="100" cy="156" r="8" fill="#ffd23f" stroke="#c99a00" stroke-width="1.5"/><text x="100" y="160" font-size="9" font-weight="800" text-anchor="middle" fill="#c99a00" font-family="Arial">1</text>', 'neck'],
+    // HUNTRIX DA CONCERTO
+    ['huntrixtop', 'top', 'Top da concerto', '🎤', 'huntrix', p => path(SH.longSleeves, 'rgba(155,93,229,.7)') + path(SH.crop, '#16161d') + '<path d="M72 150 L128 150 M72 166 L128 166" stroke="#ffd23f" stroke-width="2"/>' + `<polygon points="${starPath(100, 140, 7)}" fill="#ffd23f"/>`],
+    ['huntrixjacket', 'top', 'Giacca glitter viola', '💜', 'huntrix', p => path(SH.jacket, p(['stars', '#7b2cbf', '#ffd23f'])) + '<path d="M90 116 L100 160 L110 116 Z" fill="#16161d"/>'],
+    ['huntrixpants', 'bottom', 'Pantaloni da palco', '🖤', 'huntrix', p => path(SH.leggings, '#16161d') + '<path d="M78 202 L81 348 M122 202 L119 348" stroke="#b388ff" stroke-width="3"/><path d="M74 204 L126 204" stroke="#ffd23f" stroke-width="3"/>'],
+    ['huntrixskirt', 'bottom', 'Gonna metallizzata', '✨', 'huntrix', p => path(SH.skirt, p(['grad', '#c084fc', '#5a189a'])) + '<path d="M58 252 Q100 260 142 252" stroke="#ffd23f" stroke-width="2" fill="none"/>'],
+    ['stageboots', 'shoes', 'Stivali da palco', '👢', 'huntrix', () => both('<path d="M78 290 L100 290 L101 360 L77 360 Z" fill="#fff" stroke="#b388ff" stroke-width="1.5"/><path d="M78 300 L100 300" stroke="#9b5de5" stroke-width="4"/><rect x="75" y="358" width="28" height="8" rx="2" fill="#9b5de5"/>')],
+    ['starclips', 'hat', 'Mollette a stella', '🌟', 'huntrix', () => [[72, 54], [82, 40], [128, 48]].map(([x, y]) => `<polygon points="${starPath(x, y, 7)}" fill="#ffd23f" stroke="#c99a00"/>`).join('')],
+    ['headset', 'acc', 'Microfono da concerto', '🎙️', 'huntrix', () => '<path d="M66 72 Q64 28 100 27 Q136 28 134 72" stroke="#222" stroke-width="2.5" fill="none"/><circle cx="66" cy="77" r="5" fill="#222"/><path d="M67 81 Q71 95 86 95" stroke="#222" stroke-width="2.2" fill="none"/><circle cx="87" cy="95" r="3.2" fill="#9b5de5"/>', 'head'],
+
+    // SONIC
+    ['sonictop', 'top', 'Maglia di Sonic', '💨', 'sonic', p => path(SH.longSleeves, '#1f6fe5') + path(SH.teeBody, '#1f6fe5') + '<ellipse cx="100" cy="168" rx="17" ry="26" fill="#f8d39e"/>'],
+    ['sonichoodie', 'top', 'Felpa con anello', '🦔', 'sonic', p => path(SH.longSleeves, '#1f6fe5') + path(SH.teeBody, '#1f6fe5') + '<path d="M80 118 Q100 104 120 118 Q100 130 80 118 Z" fill="#123f9c"/><circle cx="100" cy="165" r="12" fill="none" stroke="#c99a00" stroke-width="6"/><circle cx="100" cy="165" r="12" fill="none" stroke="#ffd23f" stroke-width="3.5"/>'],
+    ['sonicpants', 'bottom', 'Leggings blu', '🔵', 'sonic', p => path(SH.leggings, '#1f6fe5')],
+    ['sonicshorts', 'bottom', 'Pantaloncini fulmine', '⚡', 'sonic', p => path(SH.shorts, '#123f9c') + '<polygon points="104,204 90,226 99,226 94,242 110,218 101,218" fill="#ffd23f"/>'],
+    ['sonicshoes', 'shoes', 'Scarpe di Sonic', '👟', 'sonic', () => both('<path d="M75 350 Q89 337 104 350 L105 362 L73 362 Z" fill="#e63946" stroke="#9d0208"/><rect x="79" y="345" width="20" height="5" fill="#fff"/><rect x="86" y="344" width="7" height="7" rx="1" fill="#ffd23f"/><rect x="72" y="360" width="34" height="5" rx="2" fill="#fff"/>')],
+    ['sonicears', 'hat', 'Cerchietto di Sonic', '🦔', 'sonic', () => '<g fill="#1f6fe5" stroke="#123f9c" stroke-width="1.5"><path d="M72 50 L60 20 L86 40 Z"/><path d="M128 50 L140 20 L114 40 Z"/><path d="M90 38 L100 8 L110 38 Z"/></g><path d="M74 44 L66 28 L82 40 Z M126 44 L134 28 L118 40 Z" fill="#f4a3b4"/><path d="M66 52 Q100 30 134 52" stroke="#123f9c" stroke-width="4" fill="none"/>'],
+    ['sonicgloves', 'acc', 'Guanti bianchi', '🧤', 'sonic', () => '<circle cx="59" cy="217" r="10" fill="#fff" stroke="#bbb"/><circle cx="141" cy="217" r="10" fill="#fff" stroke="#bbb"/><rect x="50" y="203" width="18" height="7" rx="3" fill="#fff" stroke="#bbb"/><rect x="132" y="203" width="18" height="7" rx="3" fill="#fff" stroke="#bbb"/>', 'hand'],
+    ['goldring', 'acc', 'Anello d’oro', '💫', 'sonic', () => '<circle cx="57" cy="232" r="13" fill="none" stroke="#c99a00" stroke-width="6"/><circle cx="57" cy="232" r="13" fill="none" stroke="#ffd23f" stroke-width="3.5"/>', 'hand'],
+
+    // HALLOWEEN
+    ['pumpkintop', 'top', 'Maglia zucca', '🎃', 'halloween', p => path(SH.teeSleeves, '#e85d04') + path(SH.teeBody, '#f48c06') + '<path d="M86 152 L92 141 L98 152 Z M102 152 L108 141 L114 152 Z" fill="#16161d"/><path d="M84 166 L90 172 L95 166 L100 172 L105 166 L110 172 L116 166 Q100 188 84 166 Z" fill="#16161d"/>'],
+    ['spiderskirt', 'bottom', 'Gonna ragnatela', '🕸️', 'halloween', p => path('M73 198 L127 198 L144 258' + scallop(144, 56, 258, 12, 11) + ' Z', '#16161d') + '<path d="M100 200 L78 262 M100 200 L100 266 M100 200 L122 262 M84 230 Q100 236 116 230 M90 214 Q100 218 110 214" stroke="#fff" stroke-width=".9" fill="none" opacity=".8"/>'],
+    ['witchdress', 'dress', 'Vestito da strega', '🧙', 'halloween', p => path(SH.longSleeves, '#5a189a') + path('M70 121 Q100 113 130 121 L128 198 L152 300' + jag(152, 48, 300, 10, 13) + ' L72 198 Z', '#16161d') + '<path d="M74 198 L126 198" stroke="#7b2cbf" stroke-width="5"/>'],
+    ['skeleton', 'dress', 'Tuta scheletro', '💀', 'halloween', p => path(SH.longSleeves, '#16161d') + path(SH.teeBody, '#16161d') + path(SH.pants, '#16161d') + '<g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"><path d="M100 128 L100 196"/><path d="M86 140 Q100 135 114 140 M84 153 Q100 148 116 153 M86 166 Q100 161 114 166"/><path d="M87 236 L87 340 M113 236 L113 340"/><path d="M68 140 L60 200 M132 140 L140 200"/></g>'],
+    ['witchboots', 'shoes', 'Stivaletti da strega', '🥾', 'halloween', () => both('<path d="M80 320 L100 320 L101 354 L108 350 L105 362 L77 362 Z" fill="#5a189a"/><path d="M80 330 L100 330" stroke="#ff7b00" stroke-width="2"/>')],
+    ['witchhat', 'hat', 'Cappello da strega', '🧙', 'halloween', () => '<path d="M74 42 L104 2 L113 10 L126 42 Z" fill="#16161d"/><ellipse cx="100" cy="42" rx="58" ry="11" fill="#16161d"/><path d="M75 34 Q100 40 125 34 L126 41 Q100 47 74 41 Z" fill="#7b2cbf"/><rect x="95" y="31" width="10" height="9" fill="none" stroke="#ffd23f" stroke-width="2"/>'],
+    ['catears', 'hat', 'Orecchie da gatto', '🐱', 'halloween', () => '<path d="M68 50 L66 16 L92 38 Z M132 50 L134 16 L108 38 Z" fill="#16161d"/><path d="M71 44 L70 25 L85 38 Z M129 44 L130 25 L115 38 Z" fill="#ff8fab"/><path d="M66 52 Q100 30 134 52" stroke="#16161d" stroke-width="5" fill="none"/>'],
+    ['batmask', 'glasses', 'Mascherina pipistrello', '🦇', 'halloween', () => '<path d="M74 68 Q88 62 100 69 Q112 62 126 68 L136 60 L131 80 Q112 89 100 80 Q88 89 69 80 L64 60 Z M82 75 a6 4.5 0 1 0 12 0 a6 4.5 0 1 0 -12 0 Z M106 75 a6 4.5 0 1 0 12 0 a6 4.5 0 1 0 -12 0 Z" fill="#16161d" fill-rule="evenodd"/>'],
+    ['candybucket', 'acc', 'Secchiello dolcetti', '🍬', 'halloween', () => '<path d="M134 224 Q142 206 150 224" stroke="#333" stroke-width="2" fill="none"/><path d="M128 224 L156 224 L152 248 L132 248 Z" fill="#f48c06" stroke="#9d4a00"/><path d="M135 230 L139 234 L135 238 M149 230 L145 234 L149 238 M136 243 L148 243" stroke="#16161d" stroke-width="2" fill="none"/>', 'hand'],
+    ['broom', 'acc', 'Scopa magica', '🧹', 'halloween', () => '<path d="M48 140 L68 262" stroke="#8d5a32" stroke-width="4"/><path d="M62 252 L80 302 L58 305 Z" fill="#e9c46a" stroke="#b08a2e"/><path d="M60 258 L68 260" stroke="#7b2cbf" stroke-width="3"/>', 'hand'],
+
+    // NATALE
+    ['xmassweater', 'top', 'Maglione natalizio', '🎄', 'xmas', p => path(SH.longSleeves, '#c1121f') + path(SH.teeBody, '#c1121f') + '<path d="M70 138 L76 132 L82 138 L88 132 L94 138 L100 132 L106 138 L112 132 L118 138 L124 132 L130 138" stroke="#fff" stroke-width="2.5" fill="none"/><polygon points="100,148 86,186 114,186" fill="#2d6a4f"/><rect x="97" y="186" width="6" height="7" fill="#8d5a32"/><circle cx="96" cy="170" r="2" fill="#ffd23f"/><circle cx="104" cy="178" r="2" fill="#4dd0ff"/>' + `<polygon points="${starPath(100, 146, 5)}" fill="#ffd23f"/>`],
+    ['xmasskirt', 'bottom', 'Gonna di velluto', '❤️', 'xmas', p => path(SH.skirt, '#9d0208') + '<path d="M58 257 Q100 266 142 257" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round"/>'],
+    ['candypants', 'bottom', 'Leggings bastoncino', '🍭', 'xmas', p => path(SH.leggings, p(['stripes', '#fff', '#e63946']))],
+    ['santadress', 'dress', 'Vestito da Babbo Natale', '🎅', 'xmas', p => path(SH.teeSleeves, '#c1121f') + path(SH.dress, '#c1121f') + '<path d="M56 280 Q100 291 144 280" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M72 155 L72 155" /><rect x="72" y="192" width="56" height="9" fill="#111"/><rect x="94" y="190" width="12" height="13" fill="none" stroke="#ffd23f" stroke-width="2.5"/><path d="M60 152 L71 157 M140 152 L129 157" stroke="#fff" stroke-width="6" stroke-linecap="round"/>'],
+    ['elf', 'dress', 'Costume da elfo', '🧝', 'xmas', p => path(SH.leggings, p(['stripes', '#c1121f', '#fff'])) + path(SH.longSleeves, '#2d6a4f') + path('M70 121 Q100 113 130 121 L128 198 L140 250' + jag(140, 60, 250, 9, 10) + ' L72 198 Z', '#2d6a4f') + '<rect x="72" y="194" width="56" height="8" fill="#111"/><rect x="95" y="192" width="10" height="12" fill="none" stroke="#ffd23f" stroke-width="2"/>'],
+    ['santaboots', 'shoes', 'Stivali di Natale', '👢', 'xmas', () => both('<path d="M78 314 L100 314 L102 362 L76 362 Z" fill="#111"/><rect x="75" y="306" width="28" height="10" rx="5" fill="#fff"/>')],
+    ['santahat', 'hat', 'Cappello di Babbo Natale', '🎅', 'xmas', () => '<path d="M66 50 Q86 2 130 16 Q150 30 152 62 Q142 36 122 30 L134 50 Z" fill="#c1121f"/><rect x="62" y="42" width="76" height="13" rx="6.5" fill="#fff"/><circle cx="152" cy="64" r="8" fill="#fff"/>'],
+    ['reindeer', 'hat', 'Corna di renna', '🦌', 'xmas', () => '<g stroke="#8d5a32" stroke-width="4" stroke-linecap="round" fill="none"><path d="M74 44 L64 16 M68 30 L54 26 M71 38 L60 36"/><path d="M126 44 L136 16 M132 30 L146 26 M129 38 L140 36"/></g><path d="M66 52 Q100 30 134 52" stroke="#8d5a32" stroke-width="4" fill="none"/><circle cx="100" cy="84" r="5.5" fill="#e63946"/><circle cx="98.5" cy="82.5" r="1.6" fill="#fff" opacity=".7"/>'],
+    ['elfhat', 'hat', 'Cappello da elfo', '🧝', 'xmas', () => '<path d="M66 50 Q100 28 134 50 L152 8 Z" fill="#2d6a4f"/><path d="M66 50 Q100 30 134 50 L134 57 Q100 38 66 57 Z" fill="#c1121f"/><circle cx="152" cy="8" r="5" fill="#ffd23f"/>'],
+    ['scarf', 'acc', 'Sciarpa a righe', '🧣', 'xmas', p => `<path d="M80 110 Q100 122 120 110 L122 124 Q100 136 78 124 Z" fill="${p(['vstripes', '#c1121f', '#2d6a4f'])}" ${OUT}/><path d="M110 122 L118 170 L106 172 L100 126 Z" fill="${p(['stripes', '#c1121f', '#2d6a4f'])}" ${OUT}/>`, 'neck'],
+    ['gift', 'acc', 'Regalo', '🎁', 'xmas', () => '<rect x="130" y="214" width="24" height="22" rx="2" fill="#2a9d8f" stroke="#1d6f66"/><rect x="139" y="214" width="6" height="22" fill="#ffd23f"/><rect x="130" y="222" width="24" height="6" fill="#ffd23f"/><path d="M142 214 Q132 202 137 212 M142 214 Q152 202 147 212" stroke="#ffd23f" stroke-width="3" fill="none"/>', 'hand'],
   ];
 
   /* ---------- sfondi ---------- */
@@ -255,6 +313,10 @@ const Dress = (() => {
     ['y2k', 'Glitter anni 2000', '💖', '2000', p => `<rect width="200" height="380" fill="${p(['grad', '#ff9ad5', '#c084fc'])}"/>${[[30, 40], [170, 70], [40, 200], [165, 230], [100, 30], [25, 320], [180, 340]].map(([x, y], i) => i % 2 ? `<path d="${heartPath(x, y)}" fill="#fff" opacity=".6"/>` : `<path d="M${x} ${y - 10} L${x + 3} ${y - 3} L${x + 10} ${y} L${x + 3} ${y + 3} L${x} ${y + 10} L${x - 3} ${y + 3} L${x - 10} ${y} L${x - 3} ${y - 3} Z" fill="#fff" opacity=".85"/>`).join('')}`],
     ['runway', 'Passerella', '✨', 'princess', () => `<rect width="200" height="380" fill="#1b1033"/><polygon points="40,0 70,0 120,380 0,380" fill="#fff" opacity=".08"/><polygon points="130,0 160,0 200,380 80,380" fill="#fff" opacity=".08"/><polygon points="70,250 130,250 170,380 30,380" fill="#3d2470"/>${Array.from({ length: 12 }, (_, i) => `<circle cx="${8 + i * 17}" cy="${232 + (i % 2) * 4}" r="7" fill="#0d0820"/>`).join('')}`],
     ['room', 'Cameretta', '🏠', 'sport', () => '<rect width="200" height="380" fill="#ffe8d6"/><rect y="300" width="200" height="80" fill="#d4a373"/><rect x="18" y="50" width="56" height="64" rx="4" fill="#a2d2ff" stroke="#fff" stroke-width="5"/><path d="M46 50 L46 114 M18 82 L74 82" stroke="#fff" stroke-width="4"/><rect x="138" y="60" width="44" height="56" fill="#ff8fab" transform="rotate(4 160 88)"/><polygon points="' + starPath(160, 88, 14) + '" fill="#ffd23f" transform="rotate(4 160 88)"/>'],
+    ['concert', 'Palco del concerto', '🎤', 'huntrix', () => '<rect width="200" height="380" fill="#14002b"/><polygon points="20,0 44,0 120,310 40,310" fill="#ff2e88" opacity=".22"/><polygon points="156,0 180,0 160,310 80,310" fill="#00e5ff" opacity=".2"/><polygon points="90,0 110,0 140,310 60,310" fill="#ffd23f" opacity=".15"/>' + [[24, 40], [176, 60], [40, 130], [168, 160], [100, 24]].map(([x, y]) => `<polygon points="${starPath(x, y, 5)}" fill="#fff" opacity=".8"/>`).join('') + '<rect y="300" width="200" height="80" fill="#2b0a4f"/><rect y="300" width="200" height="4" fill="#ffd23f"/>' + Array.from({ length: 11 }, (_, i) => `<circle cx="${6 + i * 19}" cy="372" r="11" fill="#0b0016"/><path d="M${6 + i * 19 + 6} 362 L${6 + i * 19 + 12} 340" stroke="${['#ff2e88', '#00e5ff', '#ffd23f', '#b388ff'][i % 4]}" stroke-width="3" stroke-linecap="round"/>`).join('')],
+    ['greenhill', 'Collina verde', '🌄', 'sonic', p => `<rect width="200" height="380" fill="${p(['grad', '#4fb3ff', '#d8f1ff'])}"/><ellipse cx="40" cy="300" rx="90" ry="80" fill="#7fd46b"/><ellipse cx="170" cy="300" rx="80" ry="60" fill="#3fae4a"/>` + Array.from({ length: 50 }, (_, i) => `<rect x="${(i % 10) * 20}" y="${306 + Math.floor(i / 10) * 20}" width="20" height="20" fill="${(i % 10 + Math.floor(i / 10)) % 2 ? '#9a5a1c' : '#c47a2c'}"/>`).join('') + '<rect y="296" width="200" height="12" fill="#4cc94c"/>' + [30, 52, 74, 126, 148, 170].map(x => `<circle cx="${x}" cy="246" r="7" fill="none" stroke="#c99a00" stroke-width="4"/><circle cx="${x}" cy="246" r="7" fill="none" stroke="#ffd23f" stroke-width="2.2"/>`).join('')],
+    ['haunted', 'Notte di Halloween', '🦇', 'halloween', p => `<rect width="200" height="380" fill="${p(['grad', '#0b132b', '#3a506b'])}"/><circle cx="150" cy="62" r="26" fill="#fff3b0"/><circle cx="160" cy="56" r="24" fill="#22304d" opacity=".25"/>` + [[40, 50], [70, 80], [120, 110]].map(([x, y]) => `<path d="M${x} ${y} q-8 -8 -16 -2 q4 2 4 6 q4 -4 8 0 q4 -4 8 0 q0 -4 4 -6 q-8 -6 -16 2 Z" fill="#0b0b14" transform="translate(8 0)"/>`).join('') + '<path d="M14 300 L14 196 L44 166 L74 196 L74 156 L90 132 L106 156 L106 300 Z" fill="#0b0b14"/><rect x="26" y="214" width="12" height="14" fill="#ffd23f"/><rect x="84" y="176" width="10" height="12" fill="#ffd23f"/><rect y="300" width="200" height="80" fill="#1b1b2f"/>' + [[150, 322, 14], [178, 332, 10], [130, 340, 9]].map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * 0.8}" fill="#f48c06" stroke="#9d4a00"/><rect x="${x - 1.5}" y="${y - r * 0.8 - 5}" width="3" height="6" fill="#2d6a4f"/>`).join('')],
+    ['xmasnight', 'Notte di Natale', '🎄', 'xmas', p => `<rect width="200" height="380" fill="${p(['grad', '#0b2545', '#13315c'])}"/>` + Array.from({ length: 30 }, (_, i) => `<circle cx="${(i * 47) % 200}" cy="${(i * 83) % 290}" r="${1.2 + (i % 3)}" fill="#fff" opacity=".85"/>`).join('') + '<path d="M0 300 Q50 288 100 300 T200 300 L200 380 L0 380 Z" fill="#f1f5ff"/><polygon points="170,150 145,210 195,210" fill="#2d6a4f"/><polygon points="170,180 140,250 200,250" fill="#2d6a4f"/><polygon points="170,215 136,292 204,292" fill="#2d6a4f"/><rect x="165" y="292" width="10" height="12" fill="#8d5a32"/>' + [[160, 205, '#e63946'], [178, 232, '#ffd23f'], [155, 262, '#4dd0ff'], [184, 280, '#e63946'], [168, 250, '#fff']].map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="3.5" fill="${c}"/>`).join('') + `<polygon points="${starPath(170, 146, 9)}" fill="#ffd23f"/>` + '<rect x="120" y="292" width="20" height="16" fill="#c1121f"/><rect x="128" y="292" width="4" height="16" fill="#ffd23f"/><rect x="18" y="296" width="18" height="14" fill="#2a9d8f"/><rect x="25" y="296" width="4" height="14" fill="#fff"/>'],
   ];
 
   const ITEMS = {};
@@ -269,6 +331,10 @@ const Dress = (() => {
     '2000': { top: 'croptop', bottom: 'flare', shoes: 'platform', hat: 'bandana', glasses: 'heart', acc: 'bag', bg: 'y2k' },
     princess: { dress: 'gown', shoes: 'flats', hat: 'tiara', glasses: 'star', acc: 'pearls', bg: 'runway' },
     sport: { top: 'sporthoodie', bottom: 'sportshorts', shoes: 'sneakers', hat: 'cap', acc: 'medal', bg: 'room' },
+    huntrix: { top: 'huntrixtop', bottom: 'huntrixpants', shoes: 'stageboots', hat: 'starclips', acc: 'headset', bg: 'concert' },
+    sonic: { top: 'sonictop', bottom: 'sonicpants', shoes: 'sonicshoes', hat: 'sonicears', acc: 'sonicgloves', bg: 'greenhill' },
+    halloween: { dress: 'witchdress', shoes: 'witchboots', hat: 'witchhat', glasses: 'batmask', acc: 'candybucket', bg: 'haunted' },
+    xmas: { dress: 'santadress', shoes: 'santaboots', hat: 'santahat', acc: 'gift', bg: 'xmasnight' },
   };
 
   const SLOTS = ['top', 'bottom', 'dress', 'shoes', 'hat', 'glasses', 'acc', 'bg'];
@@ -308,7 +374,7 @@ const Dress = (() => {
 App.register({
   id: 'vesti',
   title: 'Vesti la Bambola',
-  desc: 'Scegli una bambola e vestila in stile Hawaii, classico, anni 80, 90 o 2000. Poi fai la foto e condividila!',
+  desc: 'Scegli una bambola e vestila: Hawaii, anni 80, 90, 2000, Huntrix, Sonic, Halloween, Natale... Poi fai la foto e condividila!',
   color: '#ff4fa3',
   duration: null,
   art: () => `<span class="dress-art">${Dress.headSVG('luna')}</span><span class="emo">👗</span>`,
