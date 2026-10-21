@@ -15,7 +15,7 @@ Sito di giochi semplici per bambini, pensato per il telefono (funziona anche su 
 | 👻 **Acchiappa i Saja Boys** | Tocca i demoni alle finestre, non le Huntrix | 45 secondi · +10, +30 Jinu 👑, −20 amica |
 | ❓ **Sonic Indovina** | 10 indovinelli: contare, sommare, ombre, sequenze, intrusi | +100 a risposta + fino a 50 di bonus velocità |
 | 🔨 **Acchiappa la Talpa** | Colpisci le talpe che escono dal prato, non i coniglietti | 60 secondi · +10 talpa, +25 con elmetto (2 colpi), +50 d'oro, −20 coniglietto, combo x2/x3 |
-| 🏴‍☠️ **L’Isola delle Scimmie** | Avventura punta-e-clicca stile Monkey Island: 6 luoghi, oggetti, personaggi, enigmi e duello di insulti | Punti per ogni enigma risolto, −20 per ogni aiuto; i progressi restano salvati |
+| 🏴‍☠️ **L’Isola delle Scimmie** | Avventura punta-e-clicca stile Monkey Island in 2 capitoli (il tesoro di Capitan Banana; il fantasma del vulcano): 12 luoghi, oggetti, personaggi, enigmi, duello di insulti, pozione e lucchetto a combinazione | Punti per ogni enigma risolto, −20 per ogni aiuto; i progressi restano salvati |
 | 🔍 **Trova l’Ombra** | Scova il personaggio nascosto nella folla | 8 round · +100 + bonus velocità, −10 errore |
 | 👗 **Vesti la Bambola** | 15 bambole (tra cui tutte le Huntrix e i Saja Boys), 119 capi e accessori (Hawaii, Classico, Anni 70, 80, 90, 2000, Principessa, Sport, Supereroi, Huntrix e Saja Boys da concerto, Sonic, Halloween, Natale), 14 sfondi e look pronti; 📸 Foto per salvare o condividere sui social | 10 punti a capo + bonus se almeno 3 capi sono dello stesso stile |
 
