@@ -70,6 +70,13 @@ const Dress = (() => {
     zara:  { name: 'Zara', skin: '#5c3a21', hair: '#2b1a3a', style: 'braids', eye: '#3b2414', tips: '#b388ff' },
     nina:  { name: 'Nina', skin: '#ffd9b3', hair: '#ff7ac6', style: 'pony', eye: '#8338ec' },
     jinu:  { name: 'Jinu', skin: '#f6e6dc', hair: '#1b1b2f', style: 'swept', eye: '#5a189a', boy: true },
+    rumi:  { name: 'Rumi', skin: '#f6d5b8', hair: '#7b3fe4', style: 'braid', eye: '#d4a017' },
+    mira:  { name: 'Mira', skin: '#f1c9a5', hair: '#8b1e3f', style: 'long', eye: '#3a2a1a' },
+    zoey:  { name: 'Zoey', skin: '#f6d5b8', hair: '#16161d', style: 'buns', eye: '#3a2a1a' },
+    abby:  { name: 'Abby', skin: '#f3dcc8', hair: '#2b1a1a', style: 'short', eye: '#c1121f', boy: true },
+    mystery: { name: 'Mystery', skin: '#f6e6dc', hair: '#2b2b3a', style: 'emo', eye: '#b388ff', boy: true },
+    romance: { name: 'Romance', skin: '#f6e6dc', hair: '#5a2a3a', style: 'swept', eye: '#ff6fb5', boy: true },
+    baby:  { name: 'Baby', skin: '#f6e6dc', hair: '#e9c46a', style: 'short', eye: '#4dd0ff', boy: true },
   };
 
   function hairBack(d) {
@@ -80,7 +87,13 @@ const Dress = (() => {
       case 'pony': return `<path d="M64 70 Q62 28 100 28 Q138 28 136 70 Z" fill="${h}"/><path d="M128 40 Q176 52 160 140 Q156 104 136 72 Z" fill="${h}"/><circle cx="131" cy="42" r="5" fill="#ffd23f"/>`;
       case 'afro': return `<circle cx="100" cy="62" r="54" fill="${h}"/>`;
       case 'short': return `<path d="M64 70 Q60 30 100 30 Q140 30 136 70 Z" fill="${h}"/>`;
-      case 'swept': return `<path d="M62 76 Q58 26 100 26 Q142 26 138 76 L138 102 Q130 98 128 86 L72 86 Q70 98 62 102 Z" fill="${h}"/>`;
+      case 'swept': case 'emo': return `<path d="M62 76 Q58 26 100 26 Q142 26 138 76 L138 102 Q130 98 128 86 L72 86 Q70 98 62 102 Z" fill="${h}"/>`;
+      case 'braid': {
+        let b = `<path d="M64 70 Q62 28 100 28 Q138 28 136 70 Z" fill="${h}"/>`;
+        for (let i = 0; i < 9; i++) b += `<ellipse cx="${132 + Math.min(i, 4) * 1.5}" cy="${84 + i * 13}" rx="8" ry="8.5" fill="${h}" stroke="rgba(0,0,0,.25)"/>`;
+        return b + `<rect x="131" y="194" width="14" height="5" rx="2" fill="#ffd23f"/><path d="M134 199 L138 212 L142 199 Z" fill="${h}"/>`;
+      }
+      case 'buns': return `<circle cx="70" cy="32" r="15" fill="${h}"/><circle cx="130" cy="32" r="15" fill="${h}"/><path d="M62 74 Q58 26 100 26 Q142 26 138 74 L140 112 Q120 118 112 108 L88 108 Q80 118 60 112 Z" fill="${h}"/><circle cx="70" cy="32" r="4" fill="#ffd23f"/><circle cx="130" cy="32" r="4" fill="#ffd23f"/>`;
       case 'braids': {
         let s = `<path d="M64 70 Q62 28 100 28 Q138 28 136 70 Z" fill="${h}"/>`;
         for (const x of [66, 134]) {
@@ -101,6 +114,9 @@ const Dress = (() => {
       case 'afro': return [68, 79, 90, 101, 112, 123, 132].map((x, i) => `<circle cx="${x}" cy="${44 + (i % 2) * 3}" r="9" fill="${h}"/>`).join('');
       case 'short': return `<path d="M64 62 Q66 30 100 30 Q134 30 136 62 L128 50 L120 56 L112 46 L104 54 L96 44 L88 54 L80 46 L72 56 Z" fill="${h}"/>`;
       case 'swept': return `<path d="M64 70 Q62 28 100 28 Q138 28 136 66 Q130 46 112 42 Q106 54 90 60 Q76 64 64 70 Z" fill="${h}"/>`;
+      case 'emo': return `<path d="M64 70 Q62 28 100 28 Q138 28 136 72 L130 66 Q126 86 114 90 Q104 82 103 64 Q90 56 70 64 Z" fill="${h}"/>`;
+      case 'braid': return `<path d="M66 66 Q66 30 100 30 Q134 30 134 66 Q124 44 104 42 Q86 48 66 66 Z" fill="${h}"/>`;
+      case 'buns': return `<path d="M65 64 Q66 30 100 30 Q134 30 135 64 L127 58 L119 63 L111 57 L103 63 L95 57 L87 63 L79 57 L71 63 Z" fill="${h}"/>`;
       case 'braids': return `<path d="M66 66 Q66 30 100 30 Q134 30 134 66 Q122 40 100 38 Q78 40 66 66 Z" fill="${h}"/><path d="M100 31 L100 39" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>`;
       default: return '';
     }
