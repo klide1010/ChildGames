@@ -14,7 +14,7 @@ App.register({
   art: () => '<span class="emo">🏴‍☠️</span><span class="emo">🐒</span>',
 
   start(ctx) {
-    const SAVE = 'cg_adventure';
+    const SAVE1 = 'cg_adventure', SAVE2 = 'cg_adventure2';
     const FONT = "font-family=\"'Baloo 2', 'Trebuchet MS', Arial, sans-serif\"";
 
     /* ---------------- oggetti dell'inventario ---------------- */
@@ -28,17 +28,29 @@ App.register({
       torcia: { icon: '🪵', name: 'Torcia spenta', look: 'Una torcia di legno, ma è spenta. Bisogna accenderla.' },
       fuoco: { icon: '🔥', name: 'Torcia accesa', look: 'Una torcia accesa che illumina tutto. Addio buio!' },
       chiave: { icon: '🗝️', name: 'Chiave d’oro', look: 'La chiave d’oro della Spadaccina. Apre qualcosa di importante...' },
+      messaggio: { icon: '📜', name: 'Messaggio', look: 'C’è scritto: «Se il lucchetto vuoi aprire, la nave devi osservare: conta le <b>VELE</b>, poi i <b>CANNONI</b> e alla fine i <b>TESCHI</b>. — Capitan Banana»' },
+      barattolo: { icon: '🫙', name: 'Bottiglia vuota', look: 'Una bottiglia di vetro vuota, con il tappo. Ci si può mettere dentro qualcosa di piccolo.' },
+      conchiglia: { icon: '🐚', name: 'Conchiglia luccicante', look: 'Una conchiglia che brilla come l’arcobaleno. A qualcuno piaceranno le cose luccicanti...' },
+      occhiali: { icon: '👓', name: 'Occhiali', look: 'Un paio di occhiali spessi spessi. Qualcuno li avrà persi.' },
+      mattarello: { icon: '🥢', name: 'Mattarello', look: 'Un mattarello da cucina, tutto infarinato.' },
+      lucciola: { icon: '✨', name: 'Lucciola in bottiglia', look: 'Una lucciola che brilla dentro la bottiglia. Che bella luce!' },
+      piuma: { icon: '🪶', name: 'Piuma d’oro', look: 'Una piuma d’oro: è il primo ingrediente magico!' },
+      guanti: { icon: '🧤', name: 'Guanti da forno', look: 'Guanti spessi per toccare le cose bollenti.' },
+      peperoncino: { icon: '🌶️', name: 'Peperoncino del vulcano', look: 'Un peperoncino così piccante che fuma!' },
+      remo: { icon: '🛶', name: 'Remo', look: 'Il remo della barca di Barbagrigia.' },
+      pozione: { icon: '🧪', name: 'Pozione anti-fantasma', look: 'Una pozione verde che fa le bollicine. I fantasmi la odiano... o forse no?' },
     };
 
     /* ---------------- stato e salvataggio ---------------- */
-    const fresh = () => ({ scene: 'molo', inv: [], f: {}, hints: 0, pts: 0 });
+    const fresh = (ch = 1) => ({ ch, scene: ch === 2 ? 'approdo' : 'molo', inv: [], f: {}, hints: 0, pts: 0 });
+    const saveKey = () => (st.ch === 2 ? SAVE2 : SAVE1);
     let st = fresh();
     let selected = null;
     let ended = false;
     const has = i => st.inv.includes(i);
     const give = i => { if (!has(i)) st.inv.push(i); renderInv(); save(); };
     const drop = i => { st.inv = st.inv.filter(x => x !== i); if (selected === i) selected = null; renderInv(); save(); };
-    const save = () => { if (!ended) Store.set(SAVE, st); };
+    const save = () => { if (!ended) Store.set(saveKey(), st); };
 
     function step(id, pts) {
       if (st.f['s_' + id]) return;
@@ -108,7 +120,7 @@ App.register({
     const skyGrad = (a, b) => `<defs><linearGradient id="advsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="400" height="250" fill="url(#advsky)"/>`;
 
     /* ---------------- luoghi ---------------- */
-    const SCENES = {
+    const SCENES1 = {
       molo: {
         name: '⚓ Il Molo',
         draw: () => skyGrad('#6ec6ff', '#d6f0ff') +
@@ -225,6 +237,264 @@ App.register({
       },
     };
 
+    /* ================= CAPITOLO 2: IL FANTASMA DEL VULCANO ================= */
+    const nonna = (x, y) => person(x, y, {
+      coat: '#7b2cbf', skin: '#f1c27d', blush: true, pants: '#5a189a',
+      hairBack: '<path d="M-16 -88 Q0 -110 16 -88 L16 -78 L-16 -78 Z" fill="#eee"/>',
+      hat: '<path d="M-15 -92 Q0 -106 15 -92 Q0 -98 -15 -92 Z" fill="#eee"/><circle cx="0" cy="-104" r="8" fill="#eee"/>',
+      extra: '<circle cx="-5" cy="-88" r="5" fill="none" stroke="#5a3418" stroke-width="1.5"/><circle cx="5" cy="-88" r="5" fill="none" stroke="#5a3418" stroke-width="1.5"/><path d="M-22 -70 Q0 -56 22 -70 L22 -62 Q0 -48 -22 -62 Z" fill="#ff6f91"/>',
+    });
+    const fornaio = (x, y) => person(x, y, {
+      coat: '#fdfdfd', mustache: '#3d2b1f', pants: '#555', skin: '#e8b48c',
+      hat: '<path d="M-14 -97 Q-22 -118 -7 -113 Q0 -126 8 -113 Q22 -118 14 -97 Z" fill="#fff" stroke="#ddd"/>',
+      extra: '<path d="M-20 -60 L20 -60" stroke="#e63946" stroke-width="3"/>',
+    });
+    const guardiano = (x, y, glasses) => person(x, y, {
+      coat: '#1d3557', beard: '#8d5a32', skin: '#f1c27d',
+      hat: '<path d="M-16 -95 Q0 -112 16 -95 Z" fill="#1d3557"/><rect x="-18" y="-97" width="30" height="4" fill="#111"/>',
+      extra: glasses ? '<circle cx="-5" cy="-88" r="5" fill="rgba(255,255,255,.3)" stroke="#111" stroke-width="1.6"/><circle cx="5" cy="-88" r="5" fill="rgba(255,255,255,.3)" stroke="#111" stroke-width="1.6"/>' : '<text x="16" y="-102" font-size="18" font-weight="900" fill="#ffd23f">?</text>',
+    });
+    const gull = (x, y) => `<g transform="translate(${x} ${y})"><path d="M-6 -4 Q-22 -24 -28 -8 Z" fill="#cfd8dc"/><ellipse rx="14" ry="9" fill="#fff"/><circle cx="12" cy="-8" r="6.5" fill="#fff"/><path d="M17 -9 L27 -6 L17 -4 Z" fill="#ffb703"/><circle cx="13" cy="-9.5" r="1.5" fill="#111"/><path d="M-4 8 L-4 14 M4 8 L4 14" stroke="#ffb703" stroke-width="2"/></g>`;
+    const ghost = (x, y, nice) => `<g transform="translate(${x} ${y})">
+      <path d="M-34 0 Q-38 -84 0 -94 Q38 -84 34 0 L23 -12 L12 0 L0 -12 L-12 0 L-23 -12 Z" fill="#e8f4ff" opacity=".9" stroke="#a9c7e8" stroke-width="2"/>
+      <path d="M-30 -86 Q0 -116 30 -86 Q14 -94 0 -92 Q-14 -94 -30 -86 Z" fill="#1b1b1b"/>
+      ${nice
+        ? '<path d="M-17 -62 Q-11 -68 -5 -62 M5 -62 Q11 -68 17 -62" stroke="#1d3557" stroke-width="3" fill="none"/><path d="M-12 -44 Q0 -30 12 -44 Z" fill="#ff6f91"/><circle cx="-20" cy="-50" r="5" fill="#ff8fab" opacity=".6"/><circle cx="20" cy="-50" r="5" fill="#ff8fab" opacity=".6"/>'
+        : '<path d="M-20 -72 L-6 -66 M20 -72 L6 -66" stroke="#1d3557" stroke-width="3"/><ellipse cx="-11" cy="-60" rx="5" ry="7" fill="#1d3557"/><ellipse cx="11" cy="-60" rx="5" ry="7" fill="#1d3557"/><ellipse cx="0" cy="-38" rx="10" ry="8" fill="#1d3557"/>'}
+      <path d="M-34 -40 Q-50 -50 -46 -64 M34 -40 Q50 -50 46 -64" stroke="#e8f4ff" stroke-width="9" fill="none" stroke-linecap="round" opacity=".9"/></g>`;
+    const mushroom = (x, y, s, c) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-8" y="-30" width="16" height="30" rx="5" fill="#fff3e0"/><path d="M-30 -28 Q0 -64 30 -28 Z" fill="${c}"/><circle cx="-12" cy="-38" r="4" fill="#fff"/><circle cx="6" cy="-46" r="5" fill="#fff"/><circle cx="16" cy="-34" r="3.5" fill="#fff"/></g>`;
+
+    const NONNA = { name: 'Nonna Mirtilla', icon: '👵' };
+    const PINO = { name: 'Fornaio Pino', icon: '👨‍🍳' };
+    const FAUSTO = { name: 'Guardiano Fausto', icon: '🧔' };
+    const GULL = { name: 'Gabbiano Gigi', icon: '🐦' };
+    const BRONTO = { name: 'Capitan Brontolo', icon: '👻' };
+
+    const SCENES2 = {
+      approdo: {
+        name: '🌋 Spiaggia del Vulcano',
+        draw: () => skyGrad('#ff9a5a', '#ffe0b2') +
+          '<path d="M250 130 L320 30 L340 30 L410 130 Z" fill="#6b4a3a"/><path d="M318 32 Q330 10 342 32 Z" fill="#ff5e1a"/><circle cx="326" cy="14" r="10" fill="#9e9e9e" opacity=".6"/><circle cx="340" cy="2" r="13" fill="#9e9e9e" opacity=".5"/>' +
+          '<rect y="120" width="400" height="50" fill="#1e88e5"/><path d="M0 160 Q100 146 200 160 T400 156 L400 250 L0 250 Z" fill="#f4d58d"/>' +
+          '<path d="M24 172 L124 172 L112 196 L36 196 Z" fill="#8d5a32" stroke="#5a3418" stroke-width="2"/>' + (st.f.s_barca ? '<path d="M110 168 L140 140" stroke="#a0703c" stroke-width="4"/>' : '') +
+          barbagrigia(176, 238) +
+          (has('barattolo') || has('messaggio') || st.f.s_bottiglia ? '' : '<g transform="rotate(-20 236 222)"><rect x="226" y="214" width="26" height="12" rx="5" fill="rgba(160,220,200,.75)" stroke="#2a9d8f"/><rect x="250" y="217" width="7" height="6" fill="#8d5a32"/><rect x="230" y="217" width="14" height="5" fill="#fff3e0"/></g>') +
+          (st.f.s_conchiglia ? '' : '<path d="M296 236 Q306 214 316 236 Z" fill="#ff8fd8" stroke="#c084fc" stroke-width="2"/><path d="M300 236 L306 222 M306 236 L306 220 M312 236 L306 222" stroke="#fff" stroke-width="1.2"/><circle cx="318" cy="218" r="2" fill="#fff"/>') +
+          exitSign(296, 196, 'Villaggio ➡'),
+        spots: () => [
+          { id: 'barba', name: '🏴‍☠️ Capitan Barbagrigia', x: 144, y: 122, w: 64, h: 120, talk: talkBarba2, look: 'Barbagrigia guarda il mare preoccupato. Gli manca il suo amico Coco...' },
+          { id: 'barca', name: '🚣 Barca', x: 18, y: 150, w: 112, h: 52, look: st.f.s_barca ? 'La barca è pronta! Si va alla nave fantasma.' : 'La barca di Barbagrigia. Senza remo non si va da nessuna parte!', go: st.f.s_barca ? () => go('nave') : null, use: { remo: () => { drop('remo'); step('barca', 100); dialog([[BARBA, 'Il mio remo! Bravo mozzo! Salta a bordo: si va alla nave fantasma! ⛵']], () => go('nave')); } } },
+          ...(has('barattolo') || has('messaggio') || st.f.s_bottiglia ? [] : [{ id: 'bottiglia', name: '🍾 Bottiglia', x: 220, y: 204, w: 44, h: 32, look: 'Una bottiglia portata dal mare. Dentro c’è un foglietto!', take: () => { give('messaggio'); give('barattolo'); step('bottiglia', 50); say(null, 'Hai aperto la bottiglia: dentro c’era un <b>messaggio</b>! 📜 Ora hai anche una bottiglia vuota. (Tocca due volte il messaggio nello zaino per leggerlo.)'); render(); } }]),
+          ...(st.f.s_conchiglia ? [] : [{ id: 'conchiglia', name: '🐚 Conchiglia', x: 288, y: 208, w: 40, h: 34, look: 'Una conchiglia che luccica come l’arcobaleno!', take: () => { give('conchiglia'); step('conchiglia', 20); say(null, 'Hai preso la conchiglia luccicante! ✨'); render(); } }]),
+          { id: 'vulcano', name: '🌋 Vulcano', x: 252, y: 0, w: 148, h: 120, look: 'Il vulcano fuma come la pentola della nonna. Dietro, dicono, c’è la nave fantasma...' },
+          { id: 'exit', name: 'Verso il villaggio', x: 292, y: 186, w: 108, h: 40, go: 'villaggio' },
+        ],
+      },
+      villaggio: {
+        name: '🏘️ Il Villaggio',
+        draw: () => skyGrad('#8fd3ff', '#e1f5fe') + '<rect y="170" width="400" height="80" fill="#c8a165"/>' +
+          '<path d="M8 90 L80 40 L152 90 Z" fill="#5a189a"/><rect x="18" y="90" width="124" height="90" fill="#d4b5f5"/><rect x="62" y="122" width="34" height="58" rx="16" fill="#7b2cbf"/><circle cx="40" cy="116" r="10" fill="#fff3a3"/>' +
+          '<path d="M250 90 L322 44 L394 90 Z" fill="#8d5a32"/><rect x="258" y="90" width="128" height="90" fill="#ffe8d6"/><rect x="306" y="124" width="32" height="56" fill="#a0703c"/>' +
+          `<rect x="270" y="98" width="104" height="20" rx="4" fill="#a0703c"/><text x="322" y="113" font-size="11" font-weight="800" fill="#fff" text-anchor="middle" ${FONT}>🥖 FORNO DI PINO</text>` +
+          '<rect x="196" y="96" width="6" height="80" fill="#5a3418"/>' + `<rect x="168" y="96" width="62" height="20" rx="4" fill="#fff"/><text x="199" y="111" font-size="11" font-weight="800" fill="#1d3557" text-anchor="middle" ${FONT}>⬆ FARO</text>` +
+          nonna(110, 238) + fornaio(262, 238) + exitSign(8, 216, '⬅ Spiaggia') + exitSign(304, 216, 'Foresta ➡'),
+        spots: () => [
+          { id: 'nonna', name: '👵 Nonna Mirtilla', x: 80, y: 136, w: 60, h: 106, talk: talkNonna, look: 'Nonna Mirtilla, la saggia dell’isola. Sa fare pozioni per ogni cosa, anche per il singhiozzo!', use: { piuma: () => ingredient('piuma'), peperoncino: () => ingredient('peperoncino'), lucciola: () => ingredient('lucciola') } },
+          { id: 'pino', name: '👨‍🍳 Fornaio Pino', x: 232, y: 136, w: 60, h: 106, talk: () => (st.f.s_guanti ? say(PINO, 'Grazie ancora per il mattarello! Il pane profuma già! 🥖') : say(PINO, 'Che disastro! Ho perso il mio mattarello nella foresta dei funghi... Senza non posso fare il pane! 😭')), look: 'Pino il fornaio. È tutto infarinato, perfino i baffi.', use: { mattarello: () => { drop('mattarello'); give('guanti'); step('guanti', 100); dialog([[PINO, 'Il mio mattarello! Evviva, stasera si mangia pane! 🥖'], [PINO, 'Tieni, ti regalo i miei guanti da forno: con questi puoi toccare anche le cose bollenti! 🧤']]); } } },
+          { id: 'faro', name: '🗼 Sentiero del faro', x: 166, y: 92, w: 66, h: 84, go: 'faro', look: 'Un cartello: “Faro”. Il sentiero sale verso la scogliera.' },
+          { id: 'casa', name: '🏠 Casa della Nonna', x: 18, y: 50, w: 130, h: 70, look: 'La casetta viola di Nonna Mirtilla. Dal camino escono bollicine colorate!' },
+          { id: 'exitL', name: 'Verso la spiaggia', x: 0, y: 206, w: 112, h: 40, go: 'approdo' },
+          { id: 'exitR', name: 'Verso la foresta', x: 300, y: 206, w: 100, h: 40, go: 'foresta' },
+        ],
+      },
+      foresta: {
+        name: '🍄 La Foresta dei Funghi',
+        draw: () => skyGrad('#1b4332', '#2d6a4f') + '<rect y="190" width="400" height="60" fill="#1b4332"/>' +
+          [[40, 70], [150, 50], [360, 60]].map(([x, h]) => `<rect x="${x}" y="${120 - h}" width="14" height="${h + 80}" fill="#3e2a1a"/><circle cx="${x + 7}" cy="${120 - h}" r="34" fill="#2d6a4f"/>`).join('') +
+          mushroom(90, 200, 1.6, '#e63946') + mushroom(200, 214, 1, '#ff9f1c') + mushroom(160, 230, 0.7, '#c084fc') +
+          (st.f.s_occhiali ? '' : '<g transform="translate(90 112)"><circle cx="-8" cy="0" r="7" fill="rgba(255,255,255,.3)" stroke="#111" stroke-width="2"/><circle cx="8" cy="0" r="7" fill="rgba(255,255,255,.3)" stroke="#111" stroke-width="2"/><path d="M-1 0 L1 0" stroke="#111" stroke-width="2"/></g>') +
+          '<path d="M246 236 Q256 216 276 230 Q290 214 300 236 Z" fill="#3e2a1a"/>' +
+          (st.f.s_mattarello ? '' : '<g transform="rotate(-25 270 222)"><rect x="252" y="218" width="40" height="8" rx="4" fill="#e9c69a"/><rect x="244" y="220" width="10" height="4" rx="2" fill="#a0703c"/><rect x="290" y="220" width="10" height="4" rx="2" fill="#a0703c"/></g>') +
+          (st.f.s_lucciola ? '' : Array.from({ length: 9 }, (_, i) => `<circle cx="${300 + (i * 23) % 70}" cy="${70 + (i * 17) % 60}" r="4" fill="#fff59d"/><circle cx="${300 + (i * 23) % 70}" cy="${70 + (i * 17) % 60}" r="9" fill="#fff59d" opacity=".25"/>`).join('')) +
+          exitSign(8, 216, '⬅ Villaggio') + exitSign(304, 216, 'Vulcano ➡'),
+        spots: () => [
+          ...(st.f.s_occhiali ? [] : [{ id: 'occhiali', name: '👓 Occhiali sul fungo', x: 66, y: 96, w: 50, h: 32, look: 'Sopra il fungo rosso ci sono un paio di occhiali spessi spessi!', take: () => { give('occhiali'); step('occhiali', 20); say(null, 'Hai preso gli occhiali! Di chi saranno? 👓'); render(); } }]),
+          ...(st.f.s_mattarello ? [] : [{ id: 'mattarello', name: '🥢 Mattarello', x: 240, y: 204, w: 64, h: 36, look: 'Tra le radici c’è un mattarello tutto infarinato. Chi l’avrà perso?', take: () => { give('mattarello'); step('mattarello', 20); say(null, 'Hai preso il mattarello!'); render(); } }]),
+          { id: 'lucciole', name: '✨ Lucciole', x: 290, y: 56, w: 90, h: 84, look: st.f.s_lucciola ? 'Le lucciole ti salutano lampeggiando.' : 'Tante lucciole che brillano nel buio della foresta. Che magia!', take: () => say(null, 'Le lucciole volano via quando provi a prenderle con le mani! Ci vorrebbe un contenitore...'), use: { barattolo: () => { drop('barattolo'); give('lucciola'); step('lucciola', 100); say(null, 'Hai avvicinato la bottiglia e una lucciola ci è entrata dentro! ✨ Che bella luce!'); render(); } } },
+          { id: 'funghi', name: '🍄 Funghi giganti', x: 136, y: 184, w: 100, h: 50, look: 'Funghi grandi come ombrelli! Meglio non mangiarli.' },
+          { id: 'exitL', name: 'Verso il villaggio', x: 0, y: 206, w: 112, h: 40, go: 'villaggio' },
+          { id: 'exitR', name: 'Verso il vulcano', x: 300, y: 206, w: 100, h: 40, go: 'vulcano' },
+        ],
+      },
+      faro: {
+        name: '🗼 Il Faro',
+        draw: () => skyGrad('#4fc3f7', '#e1f5fe') + '<rect y="150" width="400" height="100" fill="#1e88e5"/><path d="M180 250 L180 150 Q260 130 400 150 L400 250 Z" fill="#8d8d8d"/>' +
+          '<path d="M246 160 L256 40 L290 40 L300 160 Z" fill="#fff"/>' + [60, 90, 120].map(y => `<path d="M${253 - (y - 40) * 0.08} ${y} L${293 + (y - 40) * 0.08} ${y} L${294 + (y - 40) * 0.09} ${y + 14} L${252 - (y - 40) * 0.09} ${y + 14} Z" fill="#e63946"/>`).join('') +
+          '<rect x="250" y="24" width="46" height="18" fill="#ffd23f" stroke="#555" stroke-width="2"/><path d="M246 24 L273 6 L300 24 Z" fill="#e63946"/><rect x="242" y="40" width="62" height="4" fill="#555"/>' +
+          '<path d="M0 250 L0 190 Q90 176 180 190 L180 250 Z" fill="#a1887f"/>' +
+          (st.f.s_piuma ? gull(330, 120) : gull(296, 34)) + guardiano(110, 240, st.f.s_remo) + exitSign(8, 218, '⬅ Villaggio'),
+        spots: () => [
+          { id: 'fausto', name: '🧔 Guardiano Fausto', x: 78, y: 130, w: 64, h: 112, talk: () => (st.f.s_remo ? say(FAUSTO, 'Ci vedo benissimo! Laggiù, oltre il vulcano... vedo una nave che brilla di verde. È la nave fantasma! Brrr! 👻') : say(FAUSTO, 'Eh? Chi è là? Senza i miei occhiali non vedo un granché! Li ho persi passeggiando nella foresta dei funghi... 🍄')), look: 'Fausto, il guardiano del faro. Strizza gli occhi... gli mancano gli occhiali!', use: { occhiali: () => { drop('occhiali'); give('remo'); step('remo', 100); dialog([[FAUSTO, 'I miei occhiali! Ora ci vedo di nuovo! 👓'], [FAUSTO, 'Ehi, ma tu sei il mozzo di Barbagrigia! Ha lasciato qui il suo remo l’altra volta: riportaglielo tu! 🛶']]); render(); } } },
+          { id: 'gigi', name: '🐦 Gabbiano Gigi', x: st.f.s_piuma ? 300 : 266, y: st.f.s_piuma ? 96 : 10, w: 60, h: 44, talk: () => say(GULL, st.f.s_piuma ? 'Squaaak! La mia conchiglia! Bella bella bella! 🐚' : 'Squaaak! Luccica? Hai qualcosa che luccica? Squaaak! (Gigi adora le cose luccicanti. Sulla coda ha una piuma d’oro!)'), look: 'Gigi, il gabbiano del faro. Ha una piuma d’oro sulla coda!', use: { conchiglia: () => { drop('conchiglia'); give('piuma'); step('piuma', 100); dialog([[GULL, 'Squaaak! Che bella conchiglia luccicante! È mia, è mia!'], [null, 'Gigi è così contento che si scuote tutto... e gli cade la piuma d’oro! Tu la raccogli. 🪶']]); render(); } } },
+          { id: 'faroT', name: '🗼 Faro', x: 240, y: 46, w: 66, h: 112, look: 'Un faro bianco e rosso. Di notte guida le navi... e forse anche i fantasmi.' },
+          { id: 'exit', name: 'Verso il villaggio', x: 0, y: 208, w: 120, h: 40, go: 'villaggio' },
+        ],
+      },
+      vulcano: {
+        name: '🌋 Il Vulcano',
+        draw: () => skyGrad('#5a1d1d', '#ff7b00') + '<path d="M60 250 L170 40 L230 40 L340 250 Z" fill="#4a2c22"/><path d="M168 42 Q200 10 232 42 Z" fill="#ff5e1a"/>' +
+          '<path d="M196 44 Q186 120 214 170 Q236 210 220 250 L250 250 Q262 200 238 160 Q214 120 206 44 Z" fill="#ff5e1a"/><path d="M200 60 Q194 120 218 170" stroke="#ffd23f" stroke-width="3" fill="none"/>' +
+          '<rect y="220" width="400" height="30" fill="#2b1a14"/>' +
+          (st.f.s_peperoncino ? '<ellipse cx="300" cy="218" rx="26" ry="12" fill="#2d6a4f"/>' : '<ellipse cx="300" cy="214" rx="28" ry="16" fill="#2d6a4f"/><path d="M290 206 Q284 222 292 228 Q296 214 290 206 Z M306 202 Q302 220 310 226 Q314 210 306 202 Z" fill="#e63946"/><path d="M300 194 Q304 186 300 180 M312 190 Q316 182 312 176" stroke="#bbb" stroke-width="2" fill="none" opacity=".7"/>') +
+          exitSign(8, 196, '⬅ Foresta'),
+        spots: () => [
+          ...(st.f.s_peperoncino ? [] : [{ id: 'pepe', name: '🌶️ Peperoncino del vulcano', x: 264, y: 176, w: 72, h: 56, look: 'Un cespuglio di peperoncini che fumano per il calore del vulcano!', take: () => { Sound.bad(); say(null, 'AHIA! Scotta come la lava! 🔥 Mi servirebbe qualcosa per proteggere le mani...'); }, use: { guanti: () => { drop('guanti'); give('peperoncino'); step('peperoncino', 100); say(null, 'Con i guanti da forno hai raccolto il peperoncino bollente! 🌶️ Ora ce l’hai!'); render(); } } }]),
+          { id: 'lava', name: '🔥 Lava', x: 186, y: 44, w: 70, h: 176, look: 'Un fiume di lava arancione. Non avvicinarti troppo!', take: () => say(null, 'Prendere la lava?! Neanche per sogno! 😱') },
+          { id: 'exit', name: 'Verso la foresta', x: 0, y: 186, w: 112, h: 40, go: 'foresta' },
+        ],
+      },
+      nave: {
+        name: '👻 La Nave Fantasma',
+        draw: () => skyGrad('#0b132b', '#1c2541') + '<circle cx="340" cy="40" r="20" fill="#e8f4ff"/>' +
+          Array.from({ length: 14 }, (_, i) => `<circle cx="${(i * 61) % 400}" cy="${(i * 37) % 100 + 6}" r="1.5" fill="#fff"/>`).join('') +
+          '<rect x="0" y="176" width="400" height="74" fill="#3b2f4a"/>' + Array.from({ length: 10 }, (_, i) => `<path d="M${i * 44} 176 L${i * 44} 250" stroke="#2b2238" stroke-width="2"/>`).join('') +
+          '<rect x="0" y="150" width="400" height="26" fill="#4a3b5c"/>' +
+          [34, 92, 228, 280].map(x => `<circle cx="${x}" cy="163" r="9" fill="#111"/><rect x="${x - 4}" y="${159}" width="22" height="8" fill="#222"/>`).join('') +
+          [[60, 'M60 150 L60 20'], [210, 'M210 150 L210 30']].map(([x, d]) => `<path d="${d}" stroke="#5a3418" stroke-width="5"/><path d="M${x + 3} 40 Q${x + 50} 70 ${x + 3} 110 Z" fill="#cfe8d6" opacity=".75"/>`).join('') +
+          [[60, 50], [210, 36], [366, 150]].map(([x, y]) => `<g transform="translate(${x} ${y})"><rect x="0" y="-4" width="26" height="18" fill="#111"/><circle cx="13" cy="4" r="5" fill="#fff"/><circle cx="11" cy="3" r="1.2" fill="#111"/><circle cx="15" cy="3" r="1.2" fill="#111"/><rect x="10" y="8" width="6" height="2" fill="#fff"/></g>`).join('') +
+          (st.f.s_coco
+            ? parrot(330, 156, true)
+            : '<rect x="300" y="86" width="56" height="70" rx="6" fill="none" stroke="#c99a00" stroke-width="3"/>' + parrot(328, 150, false) + Array.from({ length: 6 }, (_, i) => `<path d="M${304 + i * 10} 86 L${304 + i * 10} 156" stroke="#c99a00" stroke-width="2"/>`).join('') + '<rect x="318" y="140" width="20" height="16" rx="3" fill="#ffd23f" stroke="#c99a00"/><circle cx="328" cy="148" r="2.5" fill="#111"/>') +
+          ghost(170, 230, st.f.s_fantasma) + exitSign(8, 222, '⬅ Barca'),
+        spots: () => [
+          { id: 'fantasma', name: '👻 Capitan Brontolo', x: 130, y: 128, w: 80, h: 104, talk: talkGhost, look: st.f.s_fantasma ? 'Capitan Brontolo sorride. Non fa più paura a nessuno!' : 'Il terribile fantasma Capitan Brontolo! È trasparente e fa BUUU!', use: { pozione: () => { drop('pozione'); step('fantasma', 200); render(); dialog([[null, 'Lanci la pozione anti-fantasma... SPLASH! 🧪'], [BRONTO, 'Etciù! Etciùùù! Ah ah ah! Mi fa il solletico! Basta, basta! 😆'], [BRONTO, 'Va bene, va bene... Scusate. Ho rapito Coco perché mi sentivo tanto solo. Volevo solo qualcuno con cui chiacchierare... 😢'], [BRONTO, 'Il pappagallo è nella gabbia, ma il lucchetto ha un codice segreto... e io l’ho dimenticato! Forse qualcuno ha lasciato un indizio...']]); } } },
+          { id: 'gabbia', name: st.f.s_coco ? '🦜 Coco' : '🔒 Gabbia di Coco', x: 296, y: 46, w: 64, h: 114, look: st.f.s_coco ? 'Coco è libero e saltella felice!' : 'Coco è chiuso in una gabbia d’oro con un lucchetto a combinazione: 3 rotelle con i numeri.', talk: () => say(COCO, st.f.s_coco ? 'Crà! Grazie mozzo! Crà!' : 'Crà! Aiuto! Fammi uscire! Crà! Il codice... il codice è nella nave! Crà!'), take: () => (st.f.s_fantasma ? lockPuzzle() : say(BRONTO, 'BUUUU! Giù le mani dalla gabbia! Questo pappagallo è mio! 👻')) },
+          { id: 'vele', name: '⛵ Vele', x: 60, y: 30, w: 210, h: 90, look: 'Le vele della nave fantasma, sottili come lenzuola. Quante sono? Contale bene!' },
+          { id: 'cannoni', name: '💣 Cannoni', x: 20, y: 150, w: 290, h: 26, look: 'I cannoni della nave, tutti in fila. Quanti sono?' },
+          { id: 'exit', name: 'Torna alla barca', x: 0, y: 212, w: 100, h: 38, go: 'approdo' },
+        ],
+      },
+    };
+
+    function talkBarba2() {
+      if (!st.f.s_q2) {
+        dialog([
+          [BARBA, `Arrr! ${App.playerName()}, che brutta notizia: il fantasma Capitan Brontolo ha rapito Coco, il pappagallo! 🦜`],
+          [BARBA, 'L’ha portato sulla sua nave fantasma, che si nasconde dietro il vulcano.'],
+          [BARBA, 'I fantasmi hanno paura di una cosa sola: la Pozione Anti-Fantasma di Nonna Mirtilla. Vai al villaggio a chiederle aiuto!'],
+          [BARBA, 'E per raggiungere la nave serve la mia barca... ma ho perso il remo! Forse il guardiano del faro sa dov’è.'],
+        ], () => step('q2', 50));
+      } else if (st.f.s_coco) {
+        say(BARBA, 'Coco è salvo! Sei il pirata più coraggioso dei sette mari!');
+      } else {
+        const todo = [];
+        if (!st.f.s_pozione) todo.push('🧪 farti preparare la pozione da Nonna Mirtilla');
+        if (!st.f.s_barca) todo.push('🛶 ritrovare il mio remo');
+        todo.push('🦜 liberare Coco dalla nave fantasma');
+        say(BARBA, `Forza, mozzo! Devi ancora:<br>${todo.join('<br>')}`);
+      }
+    }
+
+    const ING = { piuma: 'una 🪶 piuma d’oro', peperoncino: 'un 🌶️ peperoncino del vulcano', lucciola: 'una ✨ lucciola luminosa' };
+    function talkNonna() {
+      if (st.f.s_pozione) return say(NONNA, 'Usa bene la pozione, tesoro! E salutami Coco! 💜');
+      if (!st.f.s_nonna) {
+        return dialog([
+          [NONNA, 'Ciao tesoro! Una pozione anti-fantasma? Ma certo, la so fare a occhi chiusi! 🧪'],
+          [NONNA, 'Però mi servono 3 ingredienti magici: una 🪶 <b>piuma d’oro</b>, un 🌶️ <b>peperoncino del vulcano</b> e una ✨ <b>lucciola luminosa</b>.'],
+          [NONNA, 'Portameli e ti preparo la pozione più potente dell’isola!'],
+        ], () => step('nonna', 50));
+      }
+      const missing = Object.keys(ING).filter(k => !st.f['ing_' + k]).map(k => ING[k]);
+      say(NONNA, `Mi mancano ancora: ${missing.join(', ')}. Portameli, tesoro!`);
+    }
+    function ingredient(k) {
+      drop(k);
+      st.f['ing_' + k] = true;
+      step('ing_' + k, 50);
+      const missing = Object.keys(ING).filter(x => !st.f['ing_' + x]);
+      if (missing.length) return say(NONNA, `Oh, ${ING[k]}! Perfetto! Mi mancano ancora: ${missing.map(x => ING[x]).join(', ')}.`);
+      give('pozione');
+      step('pozione', 150);
+      dialog([[NONNA, `Ecco l’ultimo ingrediente! Ora mescolo... una piuma, un peperoncino, una lucciola... BLUB BLUB! 🧪✨`], [NONNA, 'Ecco la Pozione Anti-Fantasma! Lanciala al fantasma e vedrai cosa succede! 💚']]);
+    }
+
+    function talkGhost() {
+      if (st.f.s_coco) return say(BRONTO, 'Grazie per avermi fatto ridere, mozzo! Ora Coco mi viene a trovare tutti i giorni! 👻💚');
+      if (st.f.s_fantasma) return say(BRONTO, 'Il lucchetto, il lucchetto... il codice era scritto da qualche parte. Uffa, non ho memoria! Sarà l’età: ho 300 anni!');
+      say(BRONTO, 'BUUUUU! Sono il terribile Capitan Brontolo! Questo pappagallo ora è mio! Andatevene, o vi faccio... BUUU! 👻');
+    }
+
+    function lockPuzzle() {
+      const code = [0, 0, 0];
+      const draw = () => {
+        whoEl.style.display = '';
+        whoEl.innerHTML = '🔒 Lucchetto a combinazione';
+        msgEl.innerHTML = `Gira le rotelle e scegli i 3 numeri giusti:<div class="adv-lock">${code.map((n, i) => `<div class="adv-wheel"><button data-i="${i}" data-d="1">▲</button><b>${n}</b><button data-i="${i}" data-d="-1">▼</button></div>`).join('')}</div>`;
+        msgEl.querySelectorAll('.adv-wheel button').forEach(b => {
+          b.onclick = () => { const i = +b.dataset.i; code[i] = (code[i] + +b.dataset.d + 10) % 10; Sound.tone(700, 0.04, 'square', 0.04); draw(); };
+        });
+        choiceEl.innerHTML = '';
+        [{ label: '🔓 Prova ad aprire', fn: () => {
+          if (code.join('') === '243') { step('coco', 300); render(); finale2(); }
+          else { Sound.bad(); msgEl.insertAdjacentHTML('beforeend', '<p>Clic... il lucchetto non si apre! Prova un altro codice. Chissà se c’è un indizio da qualche parte...</p>'); }
+        } }, { label: '↩️ Lascia stare', fn: () => say(null, 'Il lucchetto resta chiuso. Coco ti guarda speranzoso.') }].forEach(o => {
+          const b = U.el('button', 'adv-choice', o.label);
+          b.onclick = () => { Sound.pop(); o.fn(); };
+          choiceEl.appendChild(b);
+        });
+      };
+      draw();
+    }
+
+    function finale2() {
+      Sound.win();
+      dialog([
+        [null, '🔓 CLIC! Il lucchetto si apre!'],
+        [COCO, 'Crà! Libero! Libero! Grazie mozzo! Crà! 🦜💚'],
+        [BRONTO, 'Che bello... Coco, verresti qualche volta a chiacchierare con me?'],
+        [COCO, 'Crà! Certo! Ma solo se ci sono i biscotti! Crà!'],
+        [BARBA, `Arrr! ${App.playerName()}, hai salvato Coco e hai trasformato un fantasma brontolone in un amico. Sei un pirata leggendario! 🏴‍☠️`],
+      ], () => {
+        ended = true;
+        Store.set(SAVE2, null);
+        const stars = st.hints === 0 ? 3 : st.hints <= 3 ? 2 : 1;
+        ctx.end({
+          title: 'Pirata leggendario! 🏴‍☠️👻',
+          msg: `Hai liberato Coco e fatto amicizia con il fantasma!<br>Aiuti usati: <b>${st.hints}</b>`,
+          stars,
+        });
+      });
+    }
+
+    function hintText2() {
+      const f = st.f;
+      if (!f.s_q2) return 'Parla con Capitan Barbagrigia sulla spiaggia.';
+      if (!f.s_nonna) return 'Vai al villaggio e parla con Nonna Mirtilla.';
+      if (!f.s_bottiglia) return 'Sulla spiaggia c’è una bottiglia portata dal mare: prendila!';
+      if (!f.ing_lucciola) return has('lucciola') ? 'Dai la lucciola a Nonna Mirtilla.' : 'Nella foresta ci sono le lucciole: seleziona la bottiglia vuota e tocca le lucciole.';
+      if (!f.ing_piuma) {
+        if (has('piuma')) return 'Dai la piuma d’oro a Nonna Mirtilla.';
+        if (!f.s_conchiglia) return 'Sulla spiaggia c’è una conchiglia luccicante: prendila.';
+        return 'Al faro c’è il gabbiano Gigi che adora le cose luccicanti: dagli la conchiglia.';
+      }
+      if (!f.ing_peperoncino) {
+        if (has('peperoncino')) return 'Dai il peperoncino a Nonna Mirtilla.';
+        if (has('guanti')) return 'Vai al vulcano e usa i guanti da forno con il peperoncino.';
+        if (!f.s_mattarello) return 'Nella foresta, tra le radici, c’è il mattarello del fornaio: prendilo.';
+        return 'Riporta il mattarello al fornaio Pino nel villaggio.';
+      }
+      if (!f.s_barca) {
+        if (has('remo')) return 'Seleziona il remo e tocca la barca sulla spiaggia.';
+        if (!f.s_occhiali) return 'Nella foresta, sopra il fungo rosso, ci sono degli occhiali: prendili.';
+        return 'Dai gli occhiali al guardiano del faro.';
+      }
+      if (!f.s_fantasma) return 'Sulla nave seleziona la pozione e tocca il fantasma Capitan Brontolo.';
+      return 'Leggi il messaggio della bottiglia (tocca due volte il messaggio nello zaino): conta le vele, poi i cannoni, poi i teschi della nave. Poi tocca la gabbia e scegli Prendi.';
+    }
+
+    let SCENES = SCENES1;
+
     /* ---------------- personaggi e dialoghi ---------------- */
     const BARBA = { name: 'Capitan Barbagrigia', icon: '🏴‍☠️' };
     const OSTE = { name: 'Oste Gustavo', icon: '👨‍🍳' };
@@ -328,11 +598,11 @@ App.register({
         [BARBA, `Arrr! ${App.playerName()}, da oggi non sei più un mozzo: sei un VERO PIRATA! 🏴‍☠️`],
       ], () => {
         ended = true;
-        Store.set(SAVE, null);
+        Store.set(SAVE1, null);
         const stars = st.hints === 0 ? 3 : st.hints <= 3 ? 2 : 1;
         ctx.end({
           title: 'Sei un vero pirata! 🏴‍☠️',
-          msg: `Hai trovato il tesoro di Capitan Banana!<br>Aiuti usati: <b>${st.hints}</b>`,
+          msg: `Hai trovato il tesoro di Capitan Banana!<br>Aiuti usati: <b>${st.hints}</b><br>👻 Ora puoi giocare il <b>Capitolo 2: Il Fantasma del Vulcano</b>!`,
           stars,
         });
       });
@@ -340,6 +610,7 @@ App.register({
 
     /* ---------------- aiuti ---------------- */
     function hintText() {
+      if (st.ch === 2) return hintText2();
       const f = st.f;
       if (!f.s_quest) return 'Parla con il vecchio Capitan Barbagrigia sul molo.';
       if (!f.s_acqua && !has('secchio')) return 'Sul molo c’è un secchio: prendilo!';
@@ -416,7 +687,8 @@ App.register({
     function render() {
       const sc = SCENES[st.scene];
       place.textContent = sc.name;
-      const spots = sc.spots();
+      // le uscite stanno sotto: oggetti e personaggi vicini al cartello restano toccabili
+      const spots = sc.spots().sort((x, y) => (y.id.startsWith('exit') ? 1 : 0) - (x.id.startsWith('exit') ? 1 : 0));
       svgBox.innerHTML = `<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">${sc.draw()}${spots.map(h => `<rect class="hs" data-id="${h.id}" x="${h.x}" y="${h.y}" width="${h.w}" height="${h.h}" rx="10"/>`).join('')}</svg>`;
       svgBox.querySelectorAll('.hs').forEach(r => {
         r.addEventListener('click', () => tapSpot(spots.find(h => h.id === r.dataset.id)));
@@ -437,6 +709,12 @@ App.register({
         grotta: 'La torcia illumina la grotta... davanti a te c’è una porta di pietra con un teschio!',
         tesoro: 'Oro dappertutto! Al centro c’è lo scrigno di Capitan Banana!',
         molo: 'Sei sul molo. Il mare luccica e i gabbiani strillano.',
+        approdo: 'La spiaggia ai piedi del vulcano. La sabbia è nera e calda!',
+        villaggio: 'Un villaggio con case colorate. Si sente profumo di pane e di magia.',
+        foresta: 'Una foresta di funghi giganti. Al buio brillano tante lucine...',
+        faro: 'In cima alla scogliera c’è un faro bianco e rosso. Il vento soffia forte!',
+        vulcano: 'Fa un caldo bollente! Il vulcano brontola come un drago addormentato.',
+        nave: 'Sei salito sulla nave fantasma... tutto è verde e trasparente. Brrr! 👻',
       }[scene];
       say(null, intro);
     }
@@ -480,18 +758,24 @@ App.register({
       }
       if (b.dataset.b === 'restart') {
         say(null, 'Vuoi davvero ricominciare l’avventura da capo?', [
-          { label: '🔄 Sì, ricomincia', fn: () => { st = fresh(); ctx.add(-ctx.points); save(); go('molo'); talkBarbaHint(); } },
+          { label: '🔄 Sì, ricomincia', fn: () => { st = fresh(st.ch); ctx.add(-ctx.points); save(); go(st.scene); talkBarbaHint(); } },
           { label: '↩️ No, continuo', fn: () => say(null, 'Bene, avanti tutta!') },
         ]);
       }
     });
-    const talkBarbaHint = () => say(null, `Sei sul molo, ${U.esc(App.playerName())}. Vedi quel vecchio pirata? Toccalo e parla con lui! 👆`);
+    const talkBarbaHint = () => say(null, st.ch === 2
+      ? `Capitolo 2: il fantasma del vulcano! 👻 Sei sulla spiaggia, ${U.esc(App.playerName())}. Barbagrigia sembra preoccupato: toccalo e parla con lui! 👆`
+      : `Sei sul molo, ${U.esc(App.playerName())}. Vedi quel vecchio pirata? Toccalo e parla con lui! 👆`);
 
     /* ---------------- avvio ---------------- */
-    const saved = Store.get(SAVE, null);
-    const canResume = saved && saved.f && Object.keys(saved.f).length > 0;
-    function begin(resume) {
-      if (resume) { st = Object.assign(fresh(), saved); ctx.add(st.pts); }
+    const savedOk = x => x && x.f && Object.keys(x.f).length > 0;
+    const saved1 = Store.get(SAVE1, null), saved2 = Store.get(SAVE2, null);
+    function begin(ch, resume) {
+      const saved = ch === 2 ? saved2 : saved1;
+      st = resume ? Object.assign(fresh(ch), saved, { ch }) : fresh(ch);
+      if (!resume) Store.set(ch === 2 ? SAVE2 : SAVE1, null);
+      SCENES = ch === 2 ? SCENES2 : SCENES1;
+      if (resume) ctx.add(st.pts);
       ctx.begin();
       render();
       renderInv();
@@ -499,17 +783,17 @@ App.register({
       else talkBarbaHint();
     }
 
+    const buttons = [];
+    if (savedOk(saved1)) buttons.push({ label: '▶ Continua il Capitolo 1', value: [1, true] });
+    if (savedOk(saved2)) buttons.push({ label: '▶ Continua il Capitolo 2', value: [2, true] });
+    buttons.push({ label: '🐒 Capitolo 1: L’Isola delle Scimmie', value: [1, false] });
+    buttons.push({ label: '👻 Capitolo 2: Il Fantasma del Vulcano', value: [2, false] });
     ctx.intro({
       title: 'L’Isola delle Scimmie Ballerine',
-      art: '<span class="emo">🏴‍☠️</span><span class="emo">🏝️</span><span class="emo">🐒</span>',
-      text: 'Sei un piccolo mozzo che sogna di diventare pirata! Esplora l’isola, parla con tutti, raccogli oggetti nello zaino e usali al posto giusto per trovare il <b>tesoro di Capitan Banana</b>. Tocca le cose nella scena per guardarle, prenderle o parlarci. Se sei bloccato, c’è il pulsante 💡 Aiuto!',
-      buttons: canResume
-        ? [{ label: '▶ Continua l’avventura', value: true }, { label: '🆕 Nuova avventura', value: false }]
-        : [{ label: '🏴‍☠️ Inizia l’avventura!', value: false }],
-    }, resume => {
-      if (!resume) Store.set(SAVE, null);
-      begin(!!resume);
-    });
+      art: '<span class="emo">🏴‍☠️</span><span class="emo">🐒</span><span class="emo">👻</span>',
+      text: 'Sei un piccolo mozzo che sogna di diventare pirata! Esplora, parla con tutti, raccogli oggetti nello zaino e usali al posto giusto. <b>Capitolo 1:</b> trova il tesoro di Capitan Banana. <b>Capitolo 2:</b> salva il pappagallo Coco dal fantasma del vulcano! Se sei bloccato, c’è 💡 Aiuto.',
+      buttons,
+    }, ([ch, resume]) => begin(ch, resume));
 
     return { stop() { save(); } };
   },
