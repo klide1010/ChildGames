@@ -542,3 +542,64 @@ img.ch { display: block; width: 100%; height: 100%; object-fit: contain; pointer
 .dress-art svg { width: 100%; height: 100%; }
 .dress-art.big { width: 96px; height: 96px; }
 .gc-art .dress-art + .emo { margin-left: -14px; }
+
+/* ---------------- GIOCO: acchiappa la talpa ---------------- */
+.stage-talpa {
+  background:
+    radial-gradient(circle at 12% 18%, #fff 0 3px, transparent 4px),
+    radial-gradient(circle at 82% 30%, #ffd23f 0 3px, transparent 4px),
+    radial-gradient(circle at 40% 70%, #ff8fab 0 3px, transparent 4px),
+    radial-gradient(circle at 70% 88%, #fff 0 3px, transparent 4px),
+    linear-gradient(180deg, #8fd16a, #4f9a33);
+}
+.mole-field { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 4px; padding: 10px; max-width: 520px; margin: 0 auto; }
+.mhole { position: relative; }
+.mdirt { position: absolute; left: 8%; right: 8%; bottom: 8%; height: 28%; background: #3e2a1a; border-radius: 50%; box-shadow: inset 0 8px 0 #22150a; }
+.mwin { position: absolute; left: 11%; right: 11%; bottom: 22%; height: 95%; overflow: hidden; }
+.mpop { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; transform: translateY(110%); transition: transform .13s ease-out; pointer-events: none; }
+.mhole.up .mpop { transform: translateY(10%); }
+.mfront { position: absolute; left: 8%; right: 8%; bottom: 4%; height: 18%; background: #6b4423; border-radius: 0 0 50% 50% / 0 0 100% 100%; }
+.mhole.gold .mdirt { box-shadow: 0 0 22px #ffd23f, inset 0 8px 0 #22150a; }
+.mhole.oops .mdirt { background: #c9184a; }
+.mhammer { position: absolute; font-size: 46px; pointer-events: none; opacity: 0; z-index: 15; transform-origin: 80% 80%; }
+.mhammer.bang { animation: bang .28s ease-out; }
+@keyframes bang {
+  0% { opacity: 1; transform: translate(-40%, -90%) rotate(-50deg); }
+  45% { opacity: 1; transform: translate(-40%, -90%) rotate(15deg); }
+  100% { opacity: 0; transform: translate(-40%, -90%) rotate(0); }
+}
+
+/* ---------------- GIOCO: avventura ---------------- */
+.stage-avventura { background: #0f4c5c; touch-action: auto; }
+.adv { position: absolute; inset: 0; display: flex; flex-direction: column; color: #fff; }
+.adv-scene { position: relative; flex: none; width: 100%; max-height: 52%; aspect-ratio: 400 / 250; margin: 0 auto; background: #000; }
+.adv-svg, .adv-svg svg { width: 100%; height: 100%; display: block; }
+.adv-place {
+  position: absolute; left: 8px; top: 8px; z-index: 2; background: rgba(0, 0, 0, .55); color: #ffd23f;
+  font-weight: 800; font-size: 14px; padding: 2px 10px; border-radius: 999px; pointer-events: none;
+}
+.adv-svg .hs { fill: transparent; cursor: pointer; }
+.adv-svg .hs:active { fill: rgba(255, 210, 63, .25); }
+.adv-svg.show .hs { fill: rgba(255, 210, 63, .18); stroke: #ffd23f; stroke-width: 2.5; stroke-dasharray: 6 4; animation: hsBlink .6s 3 alternate; }
+@keyframes hsBlink { to { fill: rgba(255, 210, 63, .4); } }
+.adv-text { flex: 1; min-height: 0; overflow-y: auto; padding: 8px 12px; background: linear-gradient(180deg, #123e4a, #0b2b33); }
+.adv-who { font-weight: 800; color: #ffd23f; font-size: 16px; }
+.adv-msg { font-size: 17px; line-height: 1.35; margin: 2px 0 8px; }
+.adv-msg small { color: #b8d8de; }
+.adv-choices { display: flex; flex-direction: column; gap: 6px; }
+.adv-choice {
+  text-align: left; background: #fff; color: #0f4c5c; font-weight: 700; font-size: 15px;
+  padding: 8px 12px; border-radius: 14px; box-shadow: 0 3px 0 #08303a;
+}
+.adv-choice:active { transform: translateY(2px); box-shadow: 0 1px 0 #08303a; }
+.adv-inv { flex: none; display: flex; gap: 6px; overflow-x: auto; padding: 6px 8px; background: #08303a; min-height: 64px; align-items: center; touch-action: pan-x; }
+.adv-empty { color: #8fb8c2; font-size: 14px; padding-left: 4px; }
+.adv-item {
+  flex: none; width: 70px; height: 54px; border-radius: 12px; background: #164e5c; color: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid transparent;
+}
+.adv-item span { font-size: 22px; line-height: 1; }
+.adv-item small { font-size: 9.5px; line-height: 1.1; text-align: center; font-weight: 700; }
+.adv-item.sel { border-color: #ffd23f; background: #2a7080; box-shadow: 0 0 12px #ffd23f; }
+.adv-bar { flex: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 6px 8px 8px; background: #08303a; }
+.adv-bar .btn { font-size: 14px; padding: 7px 2px; }
